@@ -1,4 +1,4 @@
-package security;
+package thehatefulsix.carsharingapp.security;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

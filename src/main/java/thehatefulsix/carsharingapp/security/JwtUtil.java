@@ -1,4 +1,4 @@
-package security;
+package thehatefulsix.carsharingapp.security;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
