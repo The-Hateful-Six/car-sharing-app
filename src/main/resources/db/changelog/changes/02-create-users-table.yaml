@@ -19,12 +19,12 @@ databaseChangeLog:
                   constraints:
                     nullable: false
               - column:
-                  name: firstName
+                  name: first_name
                   type: varchar(255)
                   constraints:
                     nullable: false
               - column:
-                  name: lastName
+                  name: last_name
                   type: varchar(255)
                   constraints:
                     nullable: false

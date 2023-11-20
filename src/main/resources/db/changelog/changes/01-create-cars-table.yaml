@@ -24,7 +24,7 @@ databaseChangeLog:
                   constraints:
                     nullable: false
               - column:
-                  name: typeCar
+                  name: type_car
                   type: varchar(255)
               - column:
                   name: inventory
@@ -33,7 +33,7 @@ databaseChangeLog:
                     nullable: false
                     unique: true
               - column:
-                  name: dailyFee
+                  name: daily_fee
                   type: decimal
                   constraints:
                     nullable: false
