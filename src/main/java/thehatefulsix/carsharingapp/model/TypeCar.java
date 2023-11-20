@@ -1,4 +1,4 @@
-package model;
+package thehatefulsix.carsharingapp.model;
 
 public enum TypeCar {
     SEDAN,
