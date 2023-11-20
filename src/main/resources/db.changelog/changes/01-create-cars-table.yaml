@@ -1,0 +1,45 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-cars-table
+      author: Ievgenii
+      changes:
+        - createTable:
+            tableName: cars
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: model
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: brand
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: typeCar
+                  type: varchar(255)
+              - column:
+                  name: inventory
+                  type: int
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: dailyFee
+                  type: decimal
+                  constraints:
+                    nullable: false
+              - column:
+                  name: is_deleted
+                  type: boolean
+                  defaultValueBoolean: false
+                  constraints:
+                    nullable: false
