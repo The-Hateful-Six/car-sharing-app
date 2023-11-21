@@ -1,0 +1,17 @@
+databaseChangeLog:
+  - changeSet:
+      id: add-roles-to-table
+      author: volodymyr
+      changes:
+        - insert:
+            tableName: roles
+            columns:
+              - column:
+                  name: name
+                  value: CLIENT
+        - insert:
+            tableName: roles
+            columns:
+              - column:
+                  name: name
+                  value: MANAGER

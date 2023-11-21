@@ -33,9 +33,9 @@ public class Car {
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    private CarType typeCar = CarType.SEDAN;
+    private CarType typeCar;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private int inventory;
 
     @Column(nullable = false)
