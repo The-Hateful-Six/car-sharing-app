@@ -18,9 +18,10 @@ import java.util.List;
 public class TelegramBotService extends TelegramLongPollingBot {
     @Autowired
     private final UserRepository userRepository;
-    private final Long chatId = -4085484353L;
+    private final TelegramBotConfig config;
+    private final Long CHAT_ID = -4085484353L;
     private final String MESSAGE = "A new user authorized with this email: ";
-    final TelegramBotConfig config;
+
     public TelegramBotService(UserRepository userRepository, TelegramBotConfig config) {
         this.userRepository = userRepository;
         this.config = config;
@@ -41,7 +42,7 @@ public class TelegramBotService extends TelegramLongPollingBot {
         return config.getBotName();
     }
 
-    private void executeMessage(SendMessage message){
+    private void executeMessage(SendMessage message) {
         try {
             execute(message);
         } catch (TelegramApiException e) {
@@ -49,7 +50,7 @@ public class TelegramBotService extends TelegramLongPollingBot {
         }
     }
 
-    private void prepareAndSendMessage(long chatId, String textToSend){
+    private void prepareAndSendMessage(long chatId, String textToSend) {
         SendMessage message = new SendMessage();
         message.setChatId(String.valueOf(chatId));
         message.setText(textToSend);
@@ -63,7 +64,7 @@ public class TelegramBotService extends TelegramLongPollingBot {
         users.stream()
                 .filter(u -> !u.isMentioned())
                 .forEach(u -> {
-                    prepareAndSendMessage(chatId, MESSAGE + u.getEmail());
+                    prepareAndSendMessage(CHAT_ID, MESSAGE + u.getEmail());
                     u.setMentioned(true);
                 });
     }

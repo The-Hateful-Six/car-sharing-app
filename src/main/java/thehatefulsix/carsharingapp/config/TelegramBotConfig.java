@@ -12,9 +12,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @PropertySource("application.properties")
 public class TelegramBotConfig {
     @Value("${bot.name}")
-    String botName;
+    private String botName;
     @Value("${bot.token}")
-    String botToken;
-    //@Value("${bot.owner}")
-    //Long botOwnerId;
+    private String botToken;
 }
