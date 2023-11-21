@@ -4,6 +4,7 @@ import jakarta.persistence.EntityNotFoundException;
 import java.time.LocalDate;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import thehatefulsix.carsharingapp.dto.rental.CreateRentalRequestDto;
 import thehatefulsix.carsharingapp.dto.rental.RentalDto;
@@ -25,8 +26,10 @@ public class RentalServiceImpl implements RentalService {
     }
 
     @Override
-    public List<RentalDto> getAllByUserIdAndIsActive(Long userId, boolean isActive) {
-        return rentalRepository.getAllByUserIdAndIsActive(userId, isActive).stream()
+    public List<RentalDto> getAllByUserIdAndIsActive(Long userId,
+                                                     boolean isActive,
+                                                     Pageable pageable) {
+        return rentalRepository.getAllByUserIdAndIsActive(userId, isActive, pageable).stream()
                 .map(rentalMapper::toDto)
                 .toList();
     }

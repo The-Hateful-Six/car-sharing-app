@@ -1,4 +1,4 @@
-package thehatefulsix.carsharingapp.service;
+package thehatefulsix.carsharingapp.service.impl;
 
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +15,7 @@ import thehatefulsix.carsharingapp.model.user.RoleName;
 import thehatefulsix.carsharingapp.model.user.User;
 import thehatefulsix.carsharingapp.repository.RoleRepository;
 import thehatefulsix.carsharingapp.repository.UserRepository;
+import thehatefulsix.carsharingapp.service.UserService;
 
 @RequiredArgsConstructor
 @Service

@@ -1,5 +1,7 @@
 package thehatefulsix.carsharingapp.config;
 
+import static org.springframework.security.web.util.matcher.AntPathRequestMatcher.antMatcher;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,7 +16,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import static org.springframework.security.web.util.matcher.AntPathRequestMatcher.antMatcher;
 import thehatefulsix.carsharingapp.security.JwtAuthenticationFilter;
 
 @EnableMethodSecurity
@@ -38,6 +39,9 @@ public class SecurityConfig {
                         auth -> auth
                                 .requestMatchers(
                                         antMatcher("/auth/**"),
+                                        antMatcher("/health"),
+                                        antMatcher("/payments/cancel"),
+                                        antMatcher("/payments/success"),
                                         antMatcher("/swagger-ui/**"),
                                         antMatcher("/error"),
                                         antMatcher("/v3/api-docs/**")

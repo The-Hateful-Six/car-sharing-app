@@ -32,14 +32,16 @@ import thehatefulsix.carsharingapp.service.CarService;
 public class CarController {
     private final CarService carService;
 
-    @Operation(summary = "Get all cars", description = "Get a list of all cars")
+    @Operation(summary = "Get all cars",
+            description = "Get a list of all cars")
     @PreAuthorize("hasRole('CLIENT')")
     @GetMapping
     public List<CarDto> getAll(@ParameterObject @PageableDefault(size = 5) Pageable pageable) {
         return carService.findAll(pageable);
     }
 
-    @Operation(summary = "Get car by id", description = "Get car's detailed information by id")
+    @Operation(summary = "Get car by id",
+            description = "Get car's detailed information by id")
     @PreAuthorize("hasRole('CLIENT')")
     @GetMapping("/{id}")
     public CarDto getCarById(@PathVariable @Positive Long id) {

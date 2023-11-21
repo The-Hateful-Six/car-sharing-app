@@ -9,9 +9,9 @@ import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,25 +32,35 @@ import thehatefulsix.carsharingapp.service.PaymentService;
 public class PaymentController {
     private final PaymentService paymentService;
 
-    @Operation(summary = "Create payment session", description = "Create payment session by rental id")
+    @Operation(summary = "Create payment session",
+            description = "Create payment session by rental id")
+    @PreAuthorize("hasRole('CLIENT')")
     @PostMapping
-    public PaymentDto createPaymentSession(@RequestBody @Valid CreatePaymentRequestDto paymentRequestDto) {
+    public PaymentDto createPaymentSession(
+            @RequestBody @Valid CreatePaymentRequestDto paymentRequestDto) {
         return paymentService.createPaymentSession(paymentRequestDto);
     }
 
-    @Operation(summary = "Create payment session", description = "Create payment session by rental id")
-    @GetMapping("")
-    public List<PaymentDto> getAllPaymentsByUserId(@ParameterObject @PageableDefault(size = 5) Pageable pageable,
-                                                   @RequestParam @Positive Long userId) {
+    @Operation(summary = "Get payments",
+            description = "Get all payments by client's id")
+    @PreAuthorize("hasRole('CLIENT')")
+    @GetMapping()
+    public List<PaymentWithoutUrlDto> getAllPaymentsByUserId(
+            @ParameterObject @PageableDefault(size = 5) Pageable pageable,
+            @RequestParam @Positive Long userId) {
         return paymentService.getAllPayments(userId, pageable);
     }
 
+    @Operation(summary = "Check successful stripe payments",
+            description = "Check successful stripe payments (Endpoint for stripe redirection)")
     @GetMapping("/success")
     public PaymentWithoutUrlDto getSuccessfulResponse(
             @RequestParam("session_id") String sessionId) {
         return paymentService.getSuccessPayment(sessionId);
     }
 
+    @Operation(summary = "Return payment paused message",
+            description = "Return payment paused message (Endpoint for stripe redirection)")
     @GetMapping("/cancel")
     public PaymentCanceledDto getCancelResponse(@RequestParam("session_id") String sessionId) {
         return paymentService.getCancelResponse(sessionId);
