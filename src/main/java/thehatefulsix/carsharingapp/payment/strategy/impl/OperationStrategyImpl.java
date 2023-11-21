@@ -2,7 +2,7 @@ package thehatefulsix.carsharingapp.payment.strategy.impl;
 
 import java.util.HashMap;
 import org.springframework.stereotype.Component;
-import thehatefulsix.carsharingapp.model.PaymentType;
+import thehatefulsix.carsharingapp.model.payment.PaymentType;
 import thehatefulsix.carsharingapp.payment.strategy.OperationHandler;
 import thehatefulsix.carsharingapp.payment.strategy.OperationStrategy;
 
