@@ -1,6 +1,7 @@
 package thehatefulsix.carsharingapp.service;
 
 import java.util.List;
+import org.springframework.data.domain.Pageable;
 import thehatefulsix.carsharingapp.dto.payment.CreatePaymentRequestDto;
 import thehatefulsix.carsharingapp.dto.payment.PaymentCanceledDto;
 import thehatefulsix.carsharingapp.dto.payment.PaymentDto;
@@ -10,7 +11,7 @@ public interface PaymentService {
 
     PaymentDto createPaymentSession(CreatePaymentRequestDto createPaymentDto);
 
-    List<PaymentWithoutUrlDto> getAllPayments(Long userId);
+    List<PaymentWithoutUrlDto> getAllPayments(Long userId, Pageable pageable);
 
     PaymentWithoutUrlDto getSuccessPayment(String sessionId);
 

@@ -1,5 +1,7 @@
 package thehatefulsix.carsharingapp.config;
 
+import static org.springframework.security.web.util.matcher.AntPathRequestMatcher.antMatcher;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -35,7 +37,15 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(
                         auth -> auth
-                                .requestMatchers("/auth/**", "/payments/**")
+                                .requestMatchers(
+                                        antMatcher("/auth/**"),
+                                        antMatcher("/health"),
+                                        antMatcher("/payments/cancel"),
+                                        antMatcher("/payments/success"),
+                                        antMatcher("/swagger-ui/**"),
+                                        antMatcher("/error"),
+                                        antMatcher("/v3/api-docs/**")
+                                )
                                 .permitAll()
                                 .anyRequest()
                                 .authenticated()

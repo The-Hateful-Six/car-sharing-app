@@ -14,6 +14,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import thehatefulsix.carsharingapp.dto.payment.CreatePaymentRequestDto;
 import thehatefulsix.carsharingapp.dto.payment.PaymentCanceledDto;
@@ -93,8 +94,8 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
-    public List<PaymentWithoutUrlDto> getAllPayments(Long userId) {
-        return paymentRepository.findPaymentsByUserId(userId).stream()
+    public List<PaymentWithoutUrlDto> getAllPayments(Long userId, Pageable pageable) {
+        return paymentRepository.findPaymentsByUserId(userId, pageable).stream()
                 .map(paymentMapper::toWithoutUrlDto)
                 .toList();
     }
@@ -143,7 +144,7 @@ public class PaymentServiceImpl implements PaymentService {
                         .build())
                 .setMode(SessionCreateParams.Mode.PAYMENT)
                 .setSuccessUrl(SUCCESS_URL + "?session_id={CHECKOUT_SESSION_ID}")
-                .setCancelUrl(CANCEL_URL)
+                .setCancelUrl(CANCEL_URL + "?session_id={CHECKOUT_SESSION_ID}")
                 .setExpiresAt(getExpirationTime());
     }
 
