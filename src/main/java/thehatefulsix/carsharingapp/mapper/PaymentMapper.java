@@ -4,6 +4,7 @@ import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
 import org.mapstruct.NullValueCheckStrategy;
 import thehatefulsix.carsharingapp.dto.payment.PaymentDto;
+import thehatefulsix.carsharingapp.dto.payment.PaymentWithoutUrlDto;
 import thehatefulsix.carsharingapp.model.payment.Payment;
 
 @Mapper(
@@ -15,4 +16,6 @@ import thehatefulsix.carsharingapp.model.payment.Payment;
 public interface PaymentMapper {
 
     PaymentDto toDto(Payment payment);
+
+    PaymentWithoutUrlDto toWithoutUrlDto(Payment payment);
 }
