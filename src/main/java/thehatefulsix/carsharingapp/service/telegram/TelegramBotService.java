@@ -1,6 +1,7 @@
 package thehatefulsix.carsharingapp.service.telegram;
 
 import jakarta.transaction.Transactional;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -12,15 +13,14 @@ import thehatefulsix.carsharingapp.config.TelegramBotConfig;
 import thehatefulsix.carsharingapp.exception.TelegramBotException;
 import thehatefulsix.carsharingapp.model.User;
 import thehatefulsix.carsharingapp.repository.UserRepository;
-import java.util.List;
 
 @Service
 public class TelegramBotService extends TelegramLongPollingBot {
     @Autowired
     private final UserRepository userRepository;
     private final TelegramBotConfig config;
-    private final Long CHAT_ID = -4085484353L;
-    private final String MESSAGE = "A new user authorized with this email: ";
+    private final Long chatId = -4085484353L;
+    private final String message = "A new user authorized with this email: ";
 
     public TelegramBotService(UserRepository userRepository, TelegramBotConfig config) {
         this.userRepository = userRepository;
@@ -59,12 +59,12 @@ public class TelegramBotService extends TelegramLongPollingBot {
 
     @Transactional
     @Scheduled(cron = "0 * * * * *")
-    public void sendMessageAutomatically() {
+    public void sendMessageAboutAuthorization() {
         List<User> users = userRepository.findAll();
         users.stream()
                 .filter(u -> !u.isMentioned())
                 .forEach(u -> {
-                    prepareAndSendMessage(CHAT_ID, MESSAGE + u.getEmail());
+                    prepareAndSendMessage(chatId, message + u.getEmail());
                     u.setMentioned(true);
                 });
     }

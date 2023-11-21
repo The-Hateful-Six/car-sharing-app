@@ -9,7 +9,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @Data
 @EnableScheduling
 @Configuration
-@PropertySource("application.properties")
+@PropertySource("classpath:application.properties")
 public class TelegramBotConfig {
     @Value("${bot.name}")
     private String botName;
