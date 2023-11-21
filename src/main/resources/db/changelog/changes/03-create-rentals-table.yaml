@@ -26,8 +26,6 @@ databaseChangeLog:
               - column:
                   name: actual_return_date
                   type: date
-                  constraints:
-                    nullable: false
               - column:
                   name: car_id
                   type: bigint

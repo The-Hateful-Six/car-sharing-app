@@ -1,4 +1,4 @@
-package thehatefulsix.carsharingapp.model;
+package thehatefulsix.carsharingapp.model.car;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -13,50 +13,34 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
-import org.hibernate.validator.constraints.URL;
 
 @Entity
 @Getter
 @Setter
-@Table(name = "payments")
-@SQLDelete(sql = "UPDATE payments SET is_deleted = true WHERE id = ?")
-@Where(clause = "is_deleted=false")
-public class Payment {
+@SQLDelete(sql = "UPDATE cars SET is_deleted = true WHERE id = ?")
+@Where(clause = "is_deleted = false")
+@Table(name = "cars")
+public class Car {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
+    private String model;
+
+    @Column(nullable = false)
+    private String brand;
+
+    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private Status status;
-
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private Type type;
+    private CarType typeCar;
 
     @Column(nullable = false)
-    private Long rentalId;
-
-    @URL
-    @Column(nullable = false)
-    private String sessionUrl;
+    private int inventory;
 
     @Column(nullable = false)
-    private String sessionId;
-
-    @Column(nullable = false)
-    private BigDecimal amountToPay;
+    private BigDecimal dailyFee;
 
     @Column(nullable = false)
     private boolean isDeleted = false;
-
-    public enum Status {
-        PENDING,
-        PAID
-    }
-
-    public enum Type {
-        PAYMENT,
-        FINE
-    }
 }
