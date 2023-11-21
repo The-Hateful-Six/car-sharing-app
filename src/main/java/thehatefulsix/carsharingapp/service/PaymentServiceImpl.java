@@ -1,12 +1,15 @@
 package thehatefulsix.carsharingapp.service;
 
+import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
 import com.stripe.model.checkout.Session;
 import com.stripe.param.checkout.SessionCreateParams;
+import jakarta.annotation.PostConstruct;
 import jakarta.persistence.EntityNotFoundException;
 import java.math.BigDecimal;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import thehatefulsix.carsharingapp.dto.payment.CreatePaymentRequestDto;
 import thehatefulsix.carsharingapp.dto.payment.PaymentDto;
@@ -26,14 +29,21 @@ import thehatefulsix.carsharingapp.repository.RentalRepository;
 @RequiredArgsConstructor
 @Service
 public class PaymentServiceImpl implements PaymentService {
-    private static final String SUCCESS_URL = "http://localhost:8080/payments/success/";
-    private static final String CANCEL_URL = "http://localhost:8080/payments/cancel/";
+    private static final String SUCCESS_URL = "http://localhost:8080/payments/success";
+    private static final String CANCEL_URL = "http://localhost:8080/payments/cancel";
+    @Value("${stripe.secret.key}")
+    private String stripeKey;
 
     private final RentalRepository rentalRepository;
     private final CarRepository carRepository;
     private final PaymentRepository paymentRepository;
     private final PaymentMapper paymentMapper;
     private final OperationStrategy operationStrategy;
+
+    @PostConstruct
+    public void init() {
+        Stripe.apiKey = stripeKey;
+    }
 
     public void addSuccessPayment(String sessionId) {
         Session session = new Session();
@@ -47,15 +57,29 @@ public class PaymentServiceImpl implements PaymentService {
     @Override
     public PaymentDto createPaymentSession(CreatePaymentRequestDto createPaymentDto) {
         Session session;
-        SessionCreateParams.LineItem item = new SessionCreateParams.LineItem.Builder()
-                .setPrice(String.valueOf(getTotalPrice(createPaymentDto)))
-                .setQuantity(1L)
-                .build();
+        SessionCreateParams.Builder builder = new SessionCreateParams.Builder()
+                .addPaymentMethodType(SessionCreateParams.PaymentMethodType.CARD)
+                .addLineItem(SessionCreateParams.LineItem.builder()
+                        .setPriceData(SessionCreateParams.LineItem.PriceData.builder()
+                                .setCurrency("usd")
+                                .setUnitAmount(getTotalPrice(createPaymentDto).longValue())
+                                .setProductData(
+                                        SessionCreateParams.LineItem.PriceData.ProductData.builder()
+                                        .setName("Payment")
+                                        .setDescription("any description")
+                                        .build())
+                                .build()
+                        ).setQuantity(1L)
+                        .build()
+                ).setMode(SessionCreateParams.Mode.PAYMENT)
+                .setSuccessUrl(SUCCESS_URL + "?session_id={CHECKOUT_SESSION_ID}")
+                .setCancelUrl(CANCEL_URL);
         try {
-            session = Session.create(getSessionBuilder().addLineItem(item).build());
+            session = Session.create(builder.build());
         } catch (StripeException e) {
-            throw new CustomStripeException("Can't create payment session");
+            throw new CustomStripeException("Can't create payment session", e);
         }
+
         return paymentMapper.toDto(createPayment(createPaymentDto,session));
     }
 

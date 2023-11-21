@@ -11,7 +11,7 @@ public class FineOperation implements OperationHandler {
     @Override
     public BigDecimal getTotalPrice(Rental rental, Car car) {
         long daysBetween = ChronoUnit.DAYS.between(
-                rental.getActualReturnDate(), rental.getRentalDate());
+                rental.getReturnDate(), rental.getActualReturnDate());
         return car.getDailyFee().multiply(BigDecimal.valueOf(daysBetween));
     }
 }
