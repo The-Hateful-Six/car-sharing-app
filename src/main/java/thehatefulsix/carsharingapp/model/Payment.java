@@ -32,7 +32,7 @@ public class Payment {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private Type type;
+    private PaymentType type;
 
     @Column(nullable = false)
     private Long rentalId;
@@ -49,14 +49,4 @@ public class Payment {
 
     @Column(nullable = false)
     private boolean isDeleted = false;
-
-    public enum Status {
-        PENDING,
-        PAID
-    }
-
-    public enum Type {
-        PAYMENT,
-        FINE
-    }
 }
