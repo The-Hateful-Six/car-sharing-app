@@ -18,7 +18,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import thehatefulsix.carsharingapp.dto.payment.CreatePaymentRequestDto;
+import thehatefulsix.carsharingapp.dto.payment.PaymentCanceledDto;
 import thehatefulsix.carsharingapp.dto.payment.PaymentDto;
+import thehatefulsix.carsharingapp.dto.payment.PaymentWithoutUrlDto;
 import thehatefulsix.carsharingapp.service.PaymentService;
 
 @Tag(name = "Payment management",
@@ -44,14 +46,13 @@ public class PaymentController {
     }
 
     @GetMapping("/success")
-    public PaymentDto getSuccessfulResponse(@RequestParam("session_id") String sessionId) {
-        System.out.println("success " + sessionId);
-        return null;
+    public PaymentWithoutUrlDto getSuccessfulResponse(
+            @RequestParam("session_id") String sessionId) {
+        return paymentService.getSuccessPayment(sessionId);
     }
 
     @GetMapping("/cancel")
-    public String getCancelResponse() {
-        System.out.println("cancel");
-        return null;
+    public PaymentCanceledDto getCancelResponse(@RequestParam("session_id") String sessionId) {
+        return paymentService.getCancelResponse(sessionId);
     }
 }
