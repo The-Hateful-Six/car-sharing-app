@@ -10,6 +10,7 @@ import java.math.BigDecimal;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import thehatefulsix.carsharingapp.dto.payment.CreatePaymentRequestDto;
 import thehatefulsix.carsharingapp.dto.payment.PaymentDto;
@@ -85,8 +86,8 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
-    public List<PaymentDto> getAllPayments(Long userId) {
-        return paymentRepository.findPaymentsByUserId(userId).stream()
+    public List<PaymentDto> getAllPayments(Long userId, Pageable pageable) {
+        return paymentRepository.findPaymentsByUserId(userId, pageable).stream()
                 .map(paymentMapper::toDto)
                 .toList();
     }
