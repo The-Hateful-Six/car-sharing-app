@@ -11,8 +11,8 @@ import thehatefulsix.carsharingapp.dto.user.UserUpdateDto;
 import thehatefulsix.carsharingapp.exception.EntityNotFoundException;
 import thehatefulsix.carsharingapp.exception.RegistrationException;
 import thehatefulsix.carsharingapp.mapper.UserMapper;
-import thehatefulsix.carsharingapp.model.RoleName;
-import thehatefulsix.carsharingapp.model.User;
+import thehatefulsix.carsharingapp.model.user.RoleName;
+import thehatefulsix.carsharingapp.model.user.User;
 import thehatefulsix.carsharingapp.repository.RoleRepository;
 import thehatefulsix.carsharingapp.repository.UserRepository;
 

@@ -1,4 +1,4 @@
-package thehatefulsix.carsharingapp.model;
+package thehatefulsix.carsharingapp.model.user;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

@@ -1,4 +1,4 @@
-package thehatefulsix.carsharingapp.service;
+package thehatefulsix.carsharingapp.service.impl;
 
 import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
@@ -13,18 +13,19 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import thehatefulsix.carsharingapp.dto.payment.CreatePaymentRequestDto;
 import thehatefulsix.carsharingapp.dto.payment.PaymentDto;
-import thehatefulsix.carsharingapp.exception.CustomStripeException;
+import thehatefulsix.carsharingapp.exception.PaymentStripeException;
 import thehatefulsix.carsharingapp.mapper.PaymentMapper;
-import thehatefulsix.carsharingapp.model.Car;
-import thehatefulsix.carsharingapp.model.Payment;
-import thehatefulsix.carsharingapp.model.PaymentType;
 import thehatefulsix.carsharingapp.model.Rental;
-import thehatefulsix.carsharingapp.model.Status;
+import thehatefulsix.carsharingapp.model.car.Car;
+import thehatefulsix.carsharingapp.model.payment.Payment;
+import thehatefulsix.carsharingapp.model.payment.PaymentStatus;
+import thehatefulsix.carsharingapp.model.payment.PaymentType;
 import thehatefulsix.carsharingapp.payment.strategy.OperationHandler;
 import thehatefulsix.carsharingapp.payment.strategy.OperationStrategy;
 import thehatefulsix.carsharingapp.repository.CarRepository;
 import thehatefulsix.carsharingapp.repository.PaymentRepository;
 import thehatefulsix.carsharingapp.repository.RentalRepository;
+import thehatefulsix.carsharingapp.service.PaymentService;
 
 @RequiredArgsConstructor
 @Service
@@ -50,7 +51,7 @@ public class PaymentServiceImpl implements PaymentService {
         try {
             session = Session.retrieve(sessionId);
         } catch (StripeException e) {
-            throw new CustomStripeException("Can't find payment session");
+            throw new PaymentStripeException("Can't find payment session");
         }
     }
 
@@ -77,7 +78,7 @@ public class PaymentServiceImpl implements PaymentService {
         try {
             session = Session.create(builder.build());
         } catch (StripeException e) {
-            throw new CustomStripeException("Can't create payment session", e);
+            throw new PaymentStripeException("Can't create payment session", e);
         }
 
         return paymentMapper.toDto(createPayment(createPaymentDto,session));
@@ -94,7 +95,7 @@ public class PaymentServiceImpl implements PaymentService {
         Payment payment = new Payment();
         payment.setAmountToPay(getTotalPrice(createPaymentDto));
         payment.setType(PaymentType.valueOf(createPaymentDto.paymentType()));
-        payment.setStatus(Status.PENDING);
+        payment.setStatus(PaymentStatus.PENDING);
         payment.setSessionId(session.getId());
         payment.setSessionUrl(session.getUrl());
         payment.setRentalId(createPaymentDto.rentalId());

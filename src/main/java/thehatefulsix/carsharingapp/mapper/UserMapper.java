@@ -8,7 +8,7 @@ import thehatefulsix.carsharingapp.dto.user.UserRegistrationRequestDto;
 import thehatefulsix.carsharingapp.dto.user.UserResponseDto;
 import thehatefulsix.carsharingapp.dto.user.UserRoleUpdateDto;
 import thehatefulsix.carsharingapp.dto.user.UserUpdateDto;
-import thehatefulsix.carsharingapp.model.User;
+import thehatefulsix.carsharingapp.model.user.User;
 
 @Mapper(componentModel = "spring",
         injectionStrategy = InjectionStrategy.CONSTRUCTOR,

@@ -4,7 +4,7 @@ import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
 import org.mapstruct.NullValueCheckStrategy;
 import thehatefulsix.carsharingapp.dto.payment.PaymentDto;
-import thehatefulsix.carsharingapp.model.Payment;
+import thehatefulsix.carsharingapp.model.payment.Payment;
 
 @Mapper(
         componentModel = "spring",

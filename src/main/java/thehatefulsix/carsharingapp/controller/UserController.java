@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import thehatefulsix.carsharingapp.dto.user.UserResponseDto;
 import thehatefulsix.carsharingapp.dto.user.UserRoleUpdateDto;
 import thehatefulsix.carsharingapp.dto.user.UserUpdateDto;
-import thehatefulsix.carsharingapp.model.User;
+import thehatefulsix.carsharingapp.model.user.User;
 import thehatefulsix.carsharingapp.service.UserService;
 
 @RequiredArgsConstructor

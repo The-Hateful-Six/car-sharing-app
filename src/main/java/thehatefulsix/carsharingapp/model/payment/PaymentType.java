@@ -1,4 +1,4 @@
-package thehatefulsix.carsharingapp.model;
+package thehatefulsix.carsharingapp.model.payment;
 
 public enum PaymentType {
         PAYMENT,
