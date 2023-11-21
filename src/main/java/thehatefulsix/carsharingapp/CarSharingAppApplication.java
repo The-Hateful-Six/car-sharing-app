@@ -11,9 +11,12 @@ import thehatefulsix.carsharingapp.service.PaymentServiceImpl;
 public class CarSharingAppApplication {
 
     public static void main(String[] args) {
-        ConfigurableApplicationContext context = SpringApplication.run(CarSharingAppApplication.class, args);
-        PaymentServiceImpl paymentService = context.getBean(PaymentServiceImpl.class);
-        PaymentDto payment = paymentService.createPaymentSession(new CreatePaymentRequestDto(1L, "PAYMENT"));
+        ConfigurableApplicationContext context = SpringApplication.run(
+                CarSharingAppApplication.class, args);
+        PaymentServiceImpl paymentService = context.getBean(
+                PaymentServiceImpl.class);
+        PaymentDto payment = paymentService.createPaymentSession(
+                new CreatePaymentRequestDto(1L, "PAYMENT"));
         System.out.println(payment);
     }
 
