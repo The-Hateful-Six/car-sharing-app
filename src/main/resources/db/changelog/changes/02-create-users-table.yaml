@@ -42,3 +42,9 @@ databaseChangeLog:
                   defaultValueBoolean: false
                   constraints:
                     nullable: false
+              - column:
+                  name: is_mentioned
+                  type: boolean
+                  defaultValueBoolean: false
+                  constraints:
+                    nullable: false
