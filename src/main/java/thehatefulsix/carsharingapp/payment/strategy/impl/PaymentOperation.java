@@ -11,7 +11,7 @@ public class PaymentOperation implements OperationHandler {
     @Override
     public BigDecimal getTotalPrice(Rental rental, Car car) {
         long daysBetween = ChronoUnit.DAYS.between(
-                rental.getReturnDate(), rental.getRentalDate());
+                rental.getRentalDate(), rental.getReturnDate());
         return car.getDailyFee().multiply(BigDecimal.valueOf(daysBetween));
     }
 }
