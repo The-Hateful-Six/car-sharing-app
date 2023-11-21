@@ -11,7 +11,7 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import thehatefulsix.carsharingapp.config.TelegramBotConfig;
 import thehatefulsix.carsharingapp.exception.TelegramBotException;
-import thehatefulsix.carsharingapp.model.User;
+import thehatefulsix.carsharingapp.model.user.User;
 import thehatefulsix.carsharingapp.repository.UserRepository;
 
 @Service
