@@ -1,10 +1,10 @@
 package thehatefulsix.carsharingapp.service.impl;
 
+import jakarta.persistence.EntityNotFoundException;
 import java.time.LocalDate;
 import java.util.List;
-
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 import thehatefulsix.carsharingapp.dto.rental.CreateRentalRequestDto;
 import thehatefulsix.carsharingapp.dto.rental.RentalDto;
 import thehatefulsix.carsharingapp.mapper.RentalMapper;
@@ -13,6 +13,7 @@ import thehatefulsix.carsharingapp.repository.RentalRepository;
 import thehatefulsix.carsharingapp.service.RentalService;
 
 @RequiredArgsConstructor
+@Service
 public class RentalServiceImpl implements RentalService {
     private final RentalRepository rentalRepository;
     private final RentalMapper rentalMapper;
