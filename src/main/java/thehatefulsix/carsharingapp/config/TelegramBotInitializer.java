@@ -24,7 +24,7 @@ public class TelegramBotInitializer {
             telegramBotsApi.registerBot(bot);
         } catch (TelegramApiException e) {
             throw new TelegramBotException("Something went wrong "
-                    + "with initializing a telegram bot.");
+                    + "with initializing a telegram bot." + e);
         }
     }
 }
