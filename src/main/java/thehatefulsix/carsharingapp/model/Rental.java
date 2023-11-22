@@ -16,8 +16,8 @@ import org.hibernate.annotations.Where;
 @Getter
 @Setter
 @Table(name = "rentals")
-@SQLDelete(sql = "UPDATE rentals SET is_active = false WHERE id = ?")
-@Where(clause = "is_active=true")
+@SQLDelete(sql = "UPDATE rentals SET is_deleted = true WHERE id = ?")
+@Where(clause = "is_deleted = false")
 public class Rental {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,5 +38,8 @@ public class Rental {
     private Long userId;
 
     @Column(nullable = false)
-    private boolean isActive = true;
+    private Boolean isActive = true;
+
+    @Column(nullable = false)
+    private Boolean isDeleted = false;
 }
