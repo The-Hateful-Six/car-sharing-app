@@ -13,7 +13,6 @@ import thehatefulsix.carsharingapp.model.Rental;
 import thehatefulsix.carsharingapp.model.car.Car;
 import thehatefulsix.carsharingapp.repository.CarRepository;
 import thehatefulsix.carsharingapp.repository.RentalRepository;
-import thehatefulsix.carsharingapp.service.CarService;
 import thehatefulsix.carsharingapp.service.RentalService;
 
 @RequiredArgsConstructor
@@ -21,7 +20,6 @@ import thehatefulsix.carsharingapp.service.RentalService;
 public class RentalServiceImpl implements RentalService {
     private final RentalRepository rentalRepository;
     private final RentalMapper rentalMapper;
-    private final CarService carService;
     private final CarRepository carRepository;
 
     @Override
