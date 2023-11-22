@@ -12,9 +12,6 @@ public record CreateRentalRequestDto(
         LocalDate returnDate,
 
         @NotNull @Positive
-        Long carId,
-
-        @NotNull @Positive
-        Long userId
+        Long carId
 ) {
 }

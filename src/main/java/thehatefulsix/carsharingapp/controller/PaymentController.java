@@ -43,7 +43,7 @@ public class PaymentController {
 
     @Operation(summary = "Get payments",
             description = "Get all payments by client's id")
-    @PreAuthorize("hasAuthority('CLIENT')")
+    @PreAuthorize("hasAuthority('MANAGER')")
     @GetMapping()
     public List<PaymentWithoutUrlDto> getAllPaymentsByUserId(
             @ParameterObject @PageableDefault(size = 5) Pageable pageable,

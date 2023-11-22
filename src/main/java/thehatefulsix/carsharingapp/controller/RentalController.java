@@ -22,7 +22,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import thehatefulsix.carsharingapp.dto.rental.CreateRentalRequestDto;
 import thehatefulsix.carsharingapp.dto.rental.RentalDto;
-import thehatefulsix.carsharingapp.service.CarService;
 import thehatefulsix.carsharingapp.service.RentalService;
 
 @Tag(name = "Rentals management",
@@ -33,7 +32,6 @@ import thehatefulsix.carsharingapp.service.RentalService;
 @Validated
 public class RentalController {
     private final RentalService rentalService;
-    private final CarService carService;
 
     @Operation(summary = "Create new rental",
             description = "Add a new rental (decrease car inventory by 1)")
