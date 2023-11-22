@@ -6,7 +6,6 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import thehatefulsix.carsharingapp.dto.car.CarDto;
 import thehatefulsix.carsharingapp.dto.rental.CreateRentalRequestDto;
 import thehatefulsix.carsharingapp.dto.rental.RentalDto;
 import thehatefulsix.carsharingapp.mapper.RentalMapper;
@@ -55,7 +54,7 @@ public class RentalServiceImpl implements RentalService {
     @Override
     public RentalDto addActualReturnTime(Long rentalId) {
         Long carId = getRentalById(rentalId).carId();
-        Car car = carRepository.findById(carId).orElseThrow( ()
+        Car car = carRepository.findById(carId).orElseThrow(()
                 -> new EntityNotFoundException("Can`t find car by id"));
         car.setInventory(car.getInventory() + 1);
         Rental rental = rentalRepository.findById(rentalId).orElseThrow(()
