@@ -54,6 +54,9 @@ public class UserServiceTests {
     @Mock
     private RoleRepository roleRepository;
 
+    @Mock
+    private TelegramBotService telegramBotService;
+
     @Spy
     private UserMapper userMapper = new UserMapperImpl();
 

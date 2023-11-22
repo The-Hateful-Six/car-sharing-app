@@ -1,12 +1,11 @@
 package thehatefulsix.carsharingapp.service.impl;
 
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
-
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -15,8 +14,8 @@ import thehatefulsix.carsharingapp.dto.rental.CreateRentalRequestDto;
 import thehatefulsix.carsharingapp.dto.rental.RentalDto;
 import thehatefulsix.carsharingapp.mapper.RentalMapper;
 import thehatefulsix.carsharingapp.model.Rental;
-import thehatefulsix.carsharingapp.model.user.User;
 import thehatefulsix.carsharingapp.model.car.Car;
+import thehatefulsix.carsharingapp.model.user.User;
 import thehatefulsix.carsharingapp.repository.CarRepository;
 import thehatefulsix.carsharingapp.repository.RentalRepository;
 import thehatefulsix.carsharingapp.repository.UserRepository;
@@ -79,7 +78,8 @@ public class RentalServiceImpl implements RentalService {
     public void sendNotificationAboutRentDelay() {
         LocalDate yesterday = LocalDate.now().minusDays(1);
         List<User> users = rentalRepository.findAll().stream()
-                .filter(r -> r.getReturnDate().isBefore(yesterday) && r.getActualReturnDate() == null)
+                .filter(r -> r.getReturnDate().isBefore(yesterday)
+                        && r.getActualReturnDate() == null)
                 .map(Rental::getUserId)
                 .distinct()
                 .map(userId -> userRepository.findById(userId).orElse(null))
@@ -88,6 +88,7 @@ public class RentalServiceImpl implements RentalService {
         String usersEmail = users.stream()
                         .map(User::getEmail)
                                 .collect(Collectors.joining("\n"));
-        telegramBotService.sendMessage("Users who zcomunizdiv cars: \n" + usersEmail);
+        telegramBotService.sendMessage("Customers who did not return the cars "
+                + "before the return date: \n" + usersEmail);
     }
 }

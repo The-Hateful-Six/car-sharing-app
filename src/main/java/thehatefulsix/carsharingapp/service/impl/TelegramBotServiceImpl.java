@@ -1,9 +1,6 @@
 package thehatefulsix.carsharingapp.service.impl;
 
 import jakarta.transaction.Transactional;
-
-import java.lang.reflect.Method;
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
@@ -19,6 +16,7 @@ import thehatefulsix.carsharingapp.service.TelegramBotService;
 public class TelegramBotServiceImpl extends TelegramLongPollingBot implements TelegramBotService {
     private final TelegramBotConfig config;
     private final Long chatId = -4085484353L;
+
     public String getBotToken() {
         return config.getBotToken();
     }
