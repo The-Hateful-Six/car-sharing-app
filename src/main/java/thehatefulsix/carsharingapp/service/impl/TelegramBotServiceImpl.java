@@ -1,9 +1,10 @@
-package thehatefulsix.carsharingapp.service.telegram;
+package thehatefulsix.carsharingapp.service.impl;
 
 import jakarta.transaction.Transactional;
-import java.util.List;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
+
+import java.lang.reflect.Method;
+
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -11,23 +12,14 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import thehatefulsix.carsharingapp.config.TelegramBotConfig;
 import thehatefulsix.carsharingapp.exception.TelegramBotException;
-import thehatefulsix.carsharingapp.model.user.User;
-import thehatefulsix.carsharingapp.repository.UserRepository;
+import thehatefulsix.carsharingapp.service.TelegramBotService;
+import thehatefulsix.carsharingapp.service.impl.TelegramBotServiceImpl;
 
+@RequiredArgsConstructor
 @Service
-public class TelegramBotService extends TelegramLongPollingBot {
-    @Autowired
-    private final UserRepository userRepository;
+public class TelegramBotServiceImpl extends TelegramLongPollingBot implements TelegramBotService {
     private final TelegramBotConfig config;
     private final Long chatId = -4085484353L;
-    private final String message = "A new user authorized with this email: ";
-
-    public TelegramBotService(UserRepository userRepository, TelegramBotConfig config) {
-        this.userRepository = userRepository;
-        this.config = config;
-    }
-
-    @Override
     public String getBotToken() {
         return config.getBotToken();
     }
@@ -58,14 +50,7 @@ public class TelegramBotService extends TelegramLongPollingBot {
     }
 
     @Transactional
-    @Scheduled(cron = "0 * * * * *")
-    public void sendMessageAboutAuthorization() {
-        List<User> users = userRepository.findAll();
-        users.stream()
-                .filter(u -> !u.isMentioned())
-                .forEach(u -> {
-                    prepareAndSendMessage(chatId, message + u.getEmail());
-                    u.setMentioned(true);
-                });
+    public void sendMessage(String text) {
+        prepareAndSendMessage(chatId, text);
     }
 }

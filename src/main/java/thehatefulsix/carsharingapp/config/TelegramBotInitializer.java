@@ -9,13 +9,13 @@ import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 import thehatefulsix.carsharingapp.exception.TelegramBotException;
-import thehatefulsix.carsharingapp.service.telegram.TelegramBotService;
+import thehatefulsix.carsharingapp.service.impl.TelegramBotServiceImpl;
 
 @Data
 @Component
 public class TelegramBotInitializer {
     @Autowired
-    private TelegramBotService bot;
+    private TelegramBotServiceImpl bot;
 
     @EventListener({ContextRefreshedEvent.class})
     public void init() throws TelegramApiException {

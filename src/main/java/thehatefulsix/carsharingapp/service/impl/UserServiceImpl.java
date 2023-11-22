@@ -15,6 +15,7 @@ import thehatefulsix.carsharingapp.model.user.RoleName;
 import thehatefulsix.carsharingapp.model.user.User;
 import thehatefulsix.carsharingapp.repository.RoleRepository;
 import thehatefulsix.carsharingapp.repository.UserRepository;
+import thehatefulsix.carsharingapp.service.telegram.TelegramBotService;
 import thehatefulsix.carsharingapp.service.UserService;
 
 @RequiredArgsConstructor
@@ -24,6 +25,7 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
     private final UserMapper userMapper;
     private final RoleRepository roleRepository;
+    private final TelegramBotService telegramBotService;
 
     @Override
     public UserResponseDto register(
@@ -34,6 +36,8 @@ public class UserServiceImpl implements UserService {
         User user = userMapper.toUser(request);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setRoles(Set.of(roleRepository.findByName(RoleName.CLIENT)));
+        telegramBotService.sendMessage("The user with email: " + user.getEmail()
+                + " was registered.");
         return userMapper.toUserResponseDto(userRepository.save(user));
     }
 

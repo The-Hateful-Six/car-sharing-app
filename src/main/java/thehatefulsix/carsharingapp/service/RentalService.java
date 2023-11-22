@@ -15,4 +15,6 @@ public interface RentalService {
     RentalDto getRentalById(Long rentalId);
 
     RentalDto addActualReturnTime(Long rentalId, LocalDate actualReturnDate);
+
+    void sendNotificationAboutRentDelay();
 }
