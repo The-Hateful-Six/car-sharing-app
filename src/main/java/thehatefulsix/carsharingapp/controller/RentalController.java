@@ -42,7 +42,7 @@ public class RentalController {
 
     @Operation(summary = "Create new rental",
             description = "Add a new rental (decrease car inventory by 1)")
-    @PreAuthorize("hasRole('CLIENT')")
+    @PreAuthorize("hasAuthority('CLIENT')")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public RentalDto createRental(@RequestBody @Valid CreateRentalRequestDto requestDto) {
@@ -54,7 +54,7 @@ public class RentalController {
 
     @Operation(summary = "Get rentals by user ID",
             description = "Get rentals by user ID and whether the rental is still active or not")
-    @PreAuthorize("hasRole('MANAGER')")
+    @PreAuthorize("hasAuthority('MANAGER')")
     @GetMapping()
     public List<RentalDto> getAllByUserIdAndIsActive(
             @RequestParam @Positive Long userId,
@@ -65,15 +65,15 @@ public class RentalController {
 
     @Operation(summary = "Get rental by id",
             description = "Get specific rental by rental's id")
-    @PreAuthorize("hasRole('MANAGER')")
+    @PreAuthorize("hasAuthority('MANAGER')")
     @GetMapping("/{id}")
-    public RentalDto getRental(@PathVariable @Positive Long userId) {
-        return rentalService.getRentalById(userId);
+    public RentalDto getRental(@PathVariable @Positive Long id) {
+        return rentalService.getRentalById(id);
     }
 
     @Operation(summary = "Set return date",
             description = "Set actual return date (increase car inventory by 1)")
-    @PreAuthorize("hasRole('MANAGER')")
+    @PreAuthorize("hasAuthority('MANAGER')")
     @PostMapping("/return")
     public RentalDto updateReturnTime() {
         Long carId = getRental(getUserId()).carId();

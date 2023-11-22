@@ -31,16 +31,16 @@ public class UserController {
 
     @Operation(summary = "Update user role",
             description = "Update user role by users id")
-    @PreAuthorize("hasRole('MANAGER')")
+    @PreAuthorize("hasAuthority('MANAGER')")
     @PutMapping("/{id}/role")
-    public void updateRole(@PathVariable @Positive Long userId,
+    public void updateRole(@PathVariable @Positive Long id,
                            @RequestBody @Valid UserRoleUpdateDto roleUpdateDto) {
-        userService.updateRole(userId, roleUpdateDto);
+        userService.updateRole(id, roleUpdateDto);
     }
 
     @Operation(summary = "Get profile info",
             description = "Get user profile info")
-    @PreAuthorize("hasRole('CLIENT')")
+    @PreAuthorize("hasAuthority('CLIENT')")
     @GetMapping("/me")
     public UserResponseDto getProfileInfo(Authentication authentication) {
         User user = (User) authentication.getPrincipal();
@@ -49,7 +49,7 @@ public class UserController {
 
     @Operation(summary = "Update profile info",
             description = "Update user profile info")
-    @PreAuthorize("hasRole('CLIENT')")
+    @PreAuthorize("hasAuthority('CLIENT')")
     @PutMapping("/me")
     public UserResponseDto updateProfile(Authentication authentication,
                                          @RequestBody @Valid UserUpdateDto updateDto) {

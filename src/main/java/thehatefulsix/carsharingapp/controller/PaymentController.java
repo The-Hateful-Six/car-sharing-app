@@ -34,7 +34,7 @@ public class PaymentController {
 
     @Operation(summary = "Create payment session",
             description = "Create payment session by rental id")
-    @PreAuthorize("hasRole('CLIENT')")
+    @PreAuthorize("hasAuthority('CLIENT')")
     @PostMapping
     public PaymentDto createPaymentSession(
             @RequestBody @Valid CreatePaymentRequestDto paymentRequestDto) {
@@ -43,7 +43,7 @@ public class PaymentController {
 
     @Operation(summary = "Get payments",
             description = "Get all payments by client's id")
-    @PreAuthorize("hasRole('CLIENT')")
+    @PreAuthorize("hasAuthority('CLIENT')")
     @GetMapping()
     public List<PaymentWithoutUrlDto> getAllPaymentsByUserId(
             @ParameterObject @PageableDefault(size = 5) Pageable pageable,
