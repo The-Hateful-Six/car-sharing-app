@@ -7,6 +7,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -247,7 +248,7 @@ public class UserServiceTests {
         user.setPassword("12345678");
 
         UserRoleUpdateDto roleUpdateDto = new UserRoleUpdateDto(
-                "MANAGER"
+                List.of(2L)
         );
 
         Long id = 1L;
@@ -266,7 +267,7 @@ public class UserServiceTests {
         when(userRepository.findById(id)).thenReturn(Optional.empty());
 
         UserRoleUpdateDto roleUpdateDto = new UserRoleUpdateDto(
-                "MANAGER"
+                List.of(2L)
         );
 
         Exception exception = assertThrows(

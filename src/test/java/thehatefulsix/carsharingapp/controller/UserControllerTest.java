@@ -9,6 +9,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.List;
 import javax.sql.DataSource;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.AfterAll;
@@ -86,7 +87,7 @@ public class UserControllerTest {
     @Test
     void updateRole_WithValidData_ShouldDoNothing() throws Exception {
         UserRoleUpdateDto roleUpdateDto = new UserRoleUpdateDto(
-                "MANAGER"
+                List.of(2L)
         );
 
         String jsonRequest = objectMapper.writeValueAsString(roleUpdateDto);
