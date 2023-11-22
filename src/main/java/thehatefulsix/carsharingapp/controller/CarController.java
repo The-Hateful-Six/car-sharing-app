@@ -34,7 +34,7 @@ public class CarController {
 
     @Operation(summary = "Get all cars",
             description = "Get a list of all cars")
-    @PreAuthorize("hasRole('CLIENT')")
+    @PreAuthorize("hasAuthority('CLIENT')")
     @GetMapping
     public List<CarDto> getAll(@ParameterObject @PageableDefault(size = 5) Pageable pageable) {
         return carService.findAll(pageable);
@@ -42,21 +42,21 @@ public class CarController {
 
     @Operation(summary = "Get car by id",
             description = "Get car's detailed information by id")
-    @PreAuthorize("hasRole('CLIENT')")
+    @PreAuthorize("hasAuthority('CLIENT')")
     @GetMapping("/{id}")
     public CarDto getCarById(@PathVariable @Positive Long id) {
         return carService.getCarById(id);
     }
 
     @Operation(summary = "Create new car", description = "Create new car")
-    @PreAuthorize("hasRole('MANAGER')")
+    @PreAuthorize("hasAuthority('MANAGER')")
     @PostMapping
     public CarDto createCar(@RequestBody @Valid CreateCarRequestDto requestDto) {
         return carService.save(requestDto);
     }
 
     @Operation(summary = "Update car", description = "Update car by id")
-    @PreAuthorize("hasRole('MANAGER')")
+    @PreAuthorize("hasAuthority('MANAGER')")
     @PutMapping("/{id}")
     public CarDto update(@RequestBody @Valid CreateCarRequestDto carRequestDto,
                          @PathVariable @Positive Long id) {
@@ -64,7 +64,7 @@ public class CarController {
     }
 
     @Operation(summary = "Delete car", description = "Delete car by id")
-    @PreAuthorize("hasRole('MANAGER')")
+    @PreAuthorize("hasAuthority('MANAGER')")
     @DeleteMapping("/{id}")
     public void delete(@PathVariable @Positive Long id) {
         carService.deleteById(id);
