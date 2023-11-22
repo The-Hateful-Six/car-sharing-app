@@ -1,6 +1,9 @@
 package thehatefulsix.carsharingapp.dto.user;
 
+import jakarta.validation.constraints.NotNull;
+import java.util.List;
+
 public record UserRoleUpdateDto(
-        String role
+        @NotNull List<Long> roleId
 ) {
 }

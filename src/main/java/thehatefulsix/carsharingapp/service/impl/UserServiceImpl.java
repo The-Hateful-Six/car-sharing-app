@@ -1,7 +1,9 @@
 package thehatefulsix.carsharingapp.service.impl;
 
+import jakarta.transaction.Transactional;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import thehatefulsix.carsharingapp.dto.user.UserRegistrationRequestDto;
@@ -42,8 +44,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserResponseDto update(Long id, UserUpdateDto updateRequest) {
-        User user = userRepository.findById(id).orElseThrow(
+    public UserResponseDto update(UserUpdateDto updateRequest) {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userRepository.findByEmail(email).orElseThrow(
                 () -> new EntityNotFoundException("User not found")
         );
         userMapper.updateUser(updateRequest, user);
@@ -51,17 +54,20 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserResponseDto getProfileInfo(Long id) {
-        return userMapper.toUserResponseDto(userRepository.findById(id).orElseThrow(
+    public UserResponseDto getProfileInfo() {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        return userMapper.toUserResponseDto(userRepository.findByEmail(email).orElseThrow(
                 () -> new EntityNotFoundException("User not found")
         ));
     }
 
+    @Transactional
     @Override
     public void updateRole(Long id, UserRoleUpdateDto roleUpdateDto) {
         User user = userRepository.findById(id).orElseThrow(
                 () -> new EntityNotFoundException("User not found")
         );
         userMapper.updateUserRole(roleUpdateDto, user);
+        userRepository.save(user);
     }
 }

@@ -40,9 +40,14 @@ import thehatefulsix.carsharingapp.service.TelegramBotService;
 public class PaymentServiceImpl implements PaymentService {
     private static final String SUCCESS_URL = "http://localhost:8080/payments/success";
     private static final String CANCEL_URL = "http://localhost:8080/payments/cancel";
-    private static final BigDecimal CENT_DIVIDE = new BigDecimal(100);
+    private static final String PAYMENT_CURRENCY = "usd";
+    private static final String PAYMENT_NAME = "Payment";
+    private static final String SESSION_AUTO_REQUEST = "?session_id={CHECKOUT_SESSION_ID}";
+    private static final String DATE_FORMAT = "dd.MM.yyyy HH:mm";
     private static final Long EXPIRATION_TIME_IN_SECONDS = 86400L;
     private static final Long SECOND_DIVIDE = 1000L;
+    private static final Long DEFAULT_QUANTITY = 1L;
+    private static final BigDecimal CENT_DIVIDE = new BigDecimal(100);
 
     private final RentalRepository rentalRepository;
     private final CarRepository carRepository;
@@ -86,12 +91,13 @@ public class PaymentServiceImpl implements PaymentService {
         try {
             session = Session.retrieve(sessionId);
         } catch (StripeException e) {
-            throw new PaymentStripeException("Can't create payment session", e);
+            throw new PaymentStripeException(
+                    "Can't find payment session with id: " + sessionId, e);
         }
         Instant instant = Instant.ofEpochMilli(session.getExpiresAt());
         LocalDateTime expireTime = LocalDateTime.ofInstant(instant, ZoneId.systemDefault());
         String formattedDateTime = expireTime
-                .format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm"));
+                .format(DateTimeFormatter.ofPattern(DATE_FORMAT));
         String message = "Something went wrong. You can perform the operation "
                 + "for 24 hours, until " + formattedDateTime;
         return new PaymentCanceledDto(message);
@@ -133,23 +139,41 @@ public class PaymentServiceImpl implements PaymentService {
         return new SessionCreateParams.Builder()
                 .addPaymentMethodType(SessionCreateParams.PaymentMethodType.CARD)
                 .addLineItem(SessionCreateParams.LineItem.builder()
-                        .setPriceData(
-                                SessionCreateParams.LineItem.PriceData.builder()
-                                        .setCurrency("usd")
-                                        .setUnitAmount(getTotalPrice(createPaymentDto).longValue())
-                                        .setProductData(
-                                                SessionCreateParams.LineItem
-                                                        .PriceData.ProductData.builder()
-                                                        .setName("Payment")
-                                                        .setDescription("any description")
-                                                        .build())
-                                        .build())
-                        .setQuantity(1L)
+                        .setPriceData(getPriceData(createPaymentDto))
+                        .setQuantity(DEFAULT_QUANTITY)
                         .build())
                 .setMode(SessionCreateParams.Mode.PAYMENT)
-                .setSuccessUrl(SUCCESS_URL + "?session_id={CHECKOUT_SESSION_ID}")
-                .setCancelUrl(CANCEL_URL + "?session_id={CHECKOUT_SESSION_ID}")
+                .setSuccessUrl(SUCCESS_URL + SESSION_AUTO_REQUEST)
+                .setCancelUrl(CANCEL_URL + SESSION_AUTO_REQUEST)
                 .setExpiresAt(getExpirationTime());
+    }
+
+    private SessionCreateParams.LineItem.PriceData.ProductData getProductData(
+            CreatePaymentRequestDto paymentDto) {
+        Rental rental = rentalRepository.findById(paymentDto.rentalId()).orElseThrow(
+                () -> new EntityNotFoundException(
+                        "Can't find rental with id: " + paymentDto.rentalId()));
+        Car car = carRepository.getCarById(rental.getCarId()).orElseThrow(
+                () -> new EntityNotFoundException("Can't find car with id: " + rental.getCarId()));
+        StringBuilder descriptionBuilder = new StringBuilder();
+        descriptionBuilder.append("for renting")
+                .append(car.getBrand())
+                .append(" ")
+                .append(car.getModel());
+        return SessionCreateParams.LineItem
+                .PriceData.ProductData.builder()
+                .setName(PAYMENT_NAME)
+                .setDescription(descriptionBuilder.toString())
+                .build();
+    }
+
+    private SessionCreateParams.LineItem.PriceData getPriceData(
+            CreatePaymentRequestDto createPaymentDto) {
+        return SessionCreateParams.LineItem.PriceData.builder()
+                .setCurrency(PAYMENT_CURRENCY)
+                .setUnitAmount(getTotalPrice(createPaymentDto).longValue())
+                .setProductData(getProductData(createPaymentDto))
+                .build();
     }
 
     private long getExpirationTime() {
