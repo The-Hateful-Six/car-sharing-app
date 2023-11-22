@@ -14,7 +14,4 @@ import java.util.List;
 public interface RentalRepository extends JpaRepository<Rental, Long> {
     @Query("SELECT r FROM Rental r WHERE r.userId = :userId AND r.isActive = :isActive")
     List<Rental> getAllByUserIdAndIsActive(Long userId, boolean isActive, Pageable pageable);
-
-    @Query("SELECT DISTINCT r.userId FROM Rental r WHERE r.returnDate = :yesterday AND r.actualReturnDate IS NULL AND r.isActive = true")
-    List<User> findUsersWithUnreturnedCars(@Param("yesterday") LocalDate yesterday);
 }

@@ -3,8 +3,10 @@ package thehatefulsix.carsharingapp.service.impl;
 import jakarta.persistence.EntityNotFoundException;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -73,13 +75,19 @@ public class RentalServiceImpl implements RentalService {
         return rentalMapper.toDto(rentalRepository.save(rental));
     }
 
+    @Transactional
     public void sendNotificationAboutRentDelay() {
         LocalDate yesterday = LocalDate.now().minusDays(1);
-        List<User> users = rentalRepository.findUsersWithUnreturnedCars(yesterday);
-        String usersEmails = users.stream()
+        List<User> users = rentalRepository.findAll().stream()
+                .filter(r -> r.getReturnDate().isBefore(yesterday) && r.getActualReturnDate() == null)
+                .map(Rental::getUserId)
+                .distinct()
+                .map(userId -> userRepository.findById(userId).orElse(null))
+                .filter(Objects::nonNull)
+                .toList();
+        String usersEmail = users.stream()
                         .map(User::getEmail)
                                 .collect(Collectors.joining("\n"));
-        telegramBotService.sendMessage("Users, that don't return cars: \n"
-                        + usersEmails);
+        telegramBotService.sendMessage("Users who zcomunizdiv cars: \n" + usersEmail);
     }
 }

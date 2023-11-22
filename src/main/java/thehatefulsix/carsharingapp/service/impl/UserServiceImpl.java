@@ -17,7 +17,7 @@ import thehatefulsix.carsharingapp.model.user.RoleName;
 import thehatefulsix.carsharingapp.model.user.User;
 import thehatefulsix.carsharingapp.repository.RoleRepository;
 import thehatefulsix.carsharingapp.repository.UserRepository;
-import thehatefulsix.carsharingapp.service.telegram.TelegramBotService;
+import thehatefulsix.carsharingapp.service.TelegramBotService;
 import thehatefulsix.carsharingapp.service.UserService;
 
 @RequiredArgsConstructor

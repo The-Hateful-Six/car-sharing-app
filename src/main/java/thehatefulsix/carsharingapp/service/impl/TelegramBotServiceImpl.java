@@ -13,7 +13,6 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import thehatefulsix.carsharingapp.config.TelegramBotConfig;
 import thehatefulsix.carsharingapp.exception.TelegramBotException;
 import thehatefulsix.carsharingapp.service.TelegramBotService;
-import thehatefulsix.carsharingapp.service.impl.TelegramBotServiceImpl;
 
 @RequiredArgsConstructor
 @Service
