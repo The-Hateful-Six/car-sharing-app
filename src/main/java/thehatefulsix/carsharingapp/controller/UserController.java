@@ -6,7 +6,6 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,7 +16,6 @@ import org.springframework.web.bind.annotation.RestController;
 import thehatefulsix.carsharingapp.dto.user.UserResponseDto;
 import thehatefulsix.carsharingapp.dto.user.UserRoleUpdateDto;
 import thehatefulsix.carsharingapp.dto.user.UserUpdateDto;
-import thehatefulsix.carsharingapp.model.user.User;
 import thehatefulsix.carsharingapp.service.UserService;
 
 @Tag(name = "Users management",
@@ -42,18 +40,15 @@ public class UserController {
             description = "Get user profile info")
     @PreAuthorize("hasAuthority('CLIENT')")
     @GetMapping("/me")
-    public UserResponseDto getProfileInfo(Authentication authentication) {
-        User user = (User) authentication.getPrincipal();
-        return userService.getProfileInfo(user.getId());
+    public UserResponseDto getProfileInfo() {
+        return userService.getProfileInfo();
     }
 
     @Operation(summary = "Update profile info",
             description = "Update user profile info")
     @PreAuthorize("hasAuthority('CLIENT')")
     @PutMapping("/me")
-    public UserResponseDto updateProfile(Authentication authentication,
-                                         @RequestBody @Valid UserUpdateDto updateDto) {
-        User user = (User) authentication.getPrincipal();
-        return userService.update(user.getId(), updateDto);
+    public UserResponseDto updateProfile(@RequestBody @Valid UserUpdateDto updateDto) {
+        return userService.update(updateDto);
     }
 }

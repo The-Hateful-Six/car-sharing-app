@@ -10,9 +10,9 @@ public interface UserService {
     UserResponseDto register(UserRegistrationRequestDto registrationRequest)
             throws RegistrationException;
 
-    UserResponseDto update(Long id, UserUpdateDto updateRequest);
+    UserResponseDto update(UserUpdateDto updateRequest);
 
-    UserResponseDto getProfileInfo(Long id);
+    UserResponseDto getProfileInfo();
 
     void updateRole(Long id, UserRoleUpdateDto roleUpdateDto);
 }
