@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import thehatefulsix.carsharingapp.dto.rental.CreateRentalRequestDto;
 import thehatefulsix.carsharingapp.dto.rental.RentalDto;
@@ -13,6 +14,7 @@ import thehatefulsix.carsharingapp.model.Rental;
 import thehatefulsix.carsharingapp.model.car.Car;
 import thehatefulsix.carsharingapp.repository.CarRepository;
 import thehatefulsix.carsharingapp.repository.RentalRepository;
+import thehatefulsix.carsharingapp.repository.UserRepository;
 import thehatefulsix.carsharingapp.service.RentalService;
 
 @RequiredArgsConstructor
@@ -21,14 +23,17 @@ public class RentalServiceImpl implements RentalService {
     private final RentalRepository rentalRepository;
     private final RentalMapper rentalMapper;
     private final CarRepository carRepository;
+    private final UserRepository userRepository;
 
     @Override
     public RentalDto save(CreateRentalRequestDto requestDto) {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
         Long carId = requestDto.carId();
         Car car = carRepository.findById(carId).orElseThrow(()
                 -> new EntityNotFoundException("Can`t find rental by id " + carId));
         car.setInventory(car.getInventory() - 1);
         Rental rental = rentalMapper.toRental(requestDto);
+        rental.setUserId(userRepository.findByEmail(email).get().getId());
         carRepository.save(car);
         return rentalMapper.toDto(rentalRepository.save(rental));
     }
