@@ -9,8 +9,7 @@ public class CarDto {
     private Long id;
     private String model;
     private String brand;
-    private CarType typeCar = CarType.SEDAN;
-    private int inventory;
+    private CarType carType;
+    private Integer inventory;
     private BigDecimal dailyFee;
-    private boolean isDeleted = false;
 }

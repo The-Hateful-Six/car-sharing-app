@@ -1,5 +1,6 @@
 package thehatefulsix.carsharingapp.service.impl;
 
+import jakarta.transaction.Transactional;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -53,11 +54,13 @@ public class UserServiceImpl implements UserService {
         ));
     }
 
+    @Transactional
     @Override
     public void updateRole(Long id, UserRoleUpdateDto roleUpdateDto) {
         User user = userRepository.findById(id).orElseThrow(
                 () -> new EntityNotFoundException("User not found")
         );
         userMapper.updateUserRole(roleUpdateDto, user);
+        userRepository.save(user);
     }
 }

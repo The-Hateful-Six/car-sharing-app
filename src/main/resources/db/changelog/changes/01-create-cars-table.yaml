@@ -24,7 +24,7 @@ databaseChangeLog:
                   constraints:
                     nullable: false
               - column:
-                  name: type_car
+                  name: car_type
                   type: varchar(255)
               - column:
                   name: inventory

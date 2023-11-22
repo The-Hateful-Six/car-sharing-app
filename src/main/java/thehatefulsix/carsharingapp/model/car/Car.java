@@ -33,10 +33,10 @@ public class Car {
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    private CarType typeCar;
+    private CarType carType;
 
     @Column(nullable = false)
-    private int inventory;
+    private Integer inventory;
 
     @Column(nullable = false)
     private BigDecimal dailyFee;
