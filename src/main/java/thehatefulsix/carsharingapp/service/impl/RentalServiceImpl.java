@@ -12,10 +12,12 @@ import thehatefulsix.carsharingapp.dto.rental.RentalDto;
 import thehatefulsix.carsharingapp.mapper.RentalMapper;
 import thehatefulsix.carsharingapp.model.Rental;
 import thehatefulsix.carsharingapp.model.car.Car;
+import thehatefulsix.carsharingapp.model.user.User;
 import thehatefulsix.carsharingapp.repository.CarRepository;
 import thehatefulsix.carsharingapp.repository.RentalRepository;
 import thehatefulsix.carsharingapp.repository.UserRepository;
 import thehatefulsix.carsharingapp.service.RentalService;
+import thehatefulsix.carsharingapp.util.EmailNotificationSender;
 
 @RequiredArgsConstructor
 @Service
@@ -24,6 +26,7 @@ public class RentalServiceImpl implements RentalService {
     private final RentalMapper rentalMapper;
     private final CarRepository carRepository;
     private final UserRepository userRepository;
+    private final EmailNotificationSender emailNotificationSender;
 
     @Override
     public RentalDto save(CreateRentalRequestDto requestDto) {
@@ -33,7 +36,9 @@ public class RentalServiceImpl implements RentalService {
                 -> new EntityNotFoundException("Can`t find rental by id " + carId));
         car.setInventory(car.getInventory() - 1);
         Rental rental = rentalMapper.toRental(requestDto);
-        rental.setUserId(userRepository.findByEmail(email).get().getId());
+        User user = userRepository.findByEmail(email).get();
+        rental.setUserId(user.getId());
+        emailNotificationSender.sendCreateRentalNotification(rental, user, car);
         carRepository.save(car);
         return rentalMapper.toDto(rentalRepository.save(rental));
     }
