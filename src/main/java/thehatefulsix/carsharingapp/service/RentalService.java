@@ -1,6 +1,5 @@
 package thehatefulsix.carsharingapp.service;
 
-import java.time.LocalDate;
 import java.util.List;
 import org.springframework.data.domain.Pageable;
 import thehatefulsix.carsharingapp.dto.rental.CreateRentalRequestDto;
@@ -14,5 +13,5 @@ public interface RentalService {
 
     RentalDto getRentalById(Long rentalId);
 
-    RentalDto addActualReturnTime(Long rentalId, LocalDate actualReturnDate);
+    RentalDto addActualReturnTime(Long rentalId);
 }
