@@ -9,15 +9,11 @@ import jakarta.persistence.Table;
 import java.time.LocalDate;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.Where;
 
 @Entity
 @Getter
 @Setter
 @Table(name = "rentals")
-@SQLDelete(sql = "UPDATE rentals SET is_active = false WHERE id = ?")
-@Where(clause = "is_active=true")
 public class Rental {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,5 +34,5 @@ public class Rental {
     private Long userId;
 
     @Column(nullable = false)
-    private boolean isActive = true;
+    private Boolean isActive = true;
 }

@@ -46,7 +46,7 @@ public class RentalServiceImpl implements RentalService {
         Rental rental = rentalRepository.findById(rentalId).orElseThrow(()
                 -> new EntityNotFoundException("Can`t find rental by id " + rentalId));
         rental.setActualReturnDate(actualReturnDate);
-        rental.setActive(false);
+        rental.setIsActive(false);
         return rentalMapper.toDto(rentalRepository.save(rental));
     }
 }
