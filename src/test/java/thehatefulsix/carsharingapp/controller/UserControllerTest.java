@@ -31,7 +31,7 @@ import thehatefulsix.carsharingapp.dto.user.UserResponseDto;
 import thehatefulsix.carsharingapp.dto.user.UserRoleUpdateDto;
 import thehatefulsix.carsharingapp.dto.user.UserUpdateDto;
 
-@Sql(scripts = "classpath:database/users/add-three-default-users.sql")
+@Sql(scripts = "classpath:database/users/add-default-user.sql")
 @Sql(scripts = "classpath:database/users/delete-all-from-users-table.sql",
         executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -58,7 +58,7 @@ public class UserControllerTest {
             connection.setAutoCommit(true);
             ScriptUtils.executeSqlScript(
                     connection,
-                    new ClassPathResource("database/users/add-three-default-users.sql")
+                    new ClassPathResource("database/users/add-default-user.sql")
             );
         }
     }
