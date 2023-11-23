@@ -42,7 +42,7 @@ public class PaymentController {
     }
 
     @Operation(summary = "Get payments",
-            description = "Get all payments by client's id")
+            description = "Get all payments by clients id")
     @PreAuthorize("hasAuthority('MANAGER')")
     @GetMapping()
     public List<PaymentWithoutUrlDto> getAllPaymentsByUserId(
