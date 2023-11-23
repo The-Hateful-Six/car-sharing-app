@@ -20,15 +20,17 @@ import thehatefulsix.carsharingapp.repository.CarRepository;
 import thehatefulsix.carsharingapp.repository.RentalRepository;
 import thehatefulsix.carsharingapp.repository.UserRepository;
 import thehatefulsix.carsharingapp.service.RentalService;
+import thehatefulsix.carsharingapp.service.TelegramBotService;
+import thehatefulsix.carsharingapp.util.EmailNotificationSender;
 
 @RequiredArgsConstructor
 @Service
 public class RentalServiceImpl implements RentalService {
     private final RentalRepository rentalRepository;
     private final RentalMapper rentalMapper;
-    private final TelegramBotService telegramBotService;
     private final CarRepository carRepository;
     private final UserRepository userRepository;
+    private final TelegramBotService telegramBotService;
     private final EmailNotificationSender emailNotificationSender;
 
     @Override
