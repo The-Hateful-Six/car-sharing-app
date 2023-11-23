@@ -156,7 +156,7 @@ public class PaymentServiceImpl implements PaymentService {
         Car car = carRepository.getCarById(rental.getCarId()).orElseThrow(
                 () -> new EntityNotFoundException("Can't find car with id: " + rental.getCarId()));
         StringBuilder descriptionBuilder = new StringBuilder();
-        descriptionBuilder.append("for renting")
+        descriptionBuilder.append("for renting ")
                 .append(car.getBrand())
                 .append(" ")
                 .append(car.getModel());
