@@ -50,7 +50,7 @@ public class PaymentServiceImpl implements PaymentService {
     private static final String PAYMENT_NAME = "Payment";
     private static final String SESSION_AUTO_REQUEST = "?session_id={CHECKOUT_SESSION_ID}";
     private static final String DATE_FORMAT = "dd.MM.yyyy HH:mm";
-    private static final Long EXPIRATION_TIME_IN_SECONDS = 86400L;
+    private static final Long EXPIRATION_TIME_IN_SECONDS = 70400L;
     private static final Long SECOND_DIVIDE = 1000L;
     private static final Long DEFAULT_QUANTITY = 1L;
     private static final BigDecimal CENT_DIVIDE = new BigDecimal(100);

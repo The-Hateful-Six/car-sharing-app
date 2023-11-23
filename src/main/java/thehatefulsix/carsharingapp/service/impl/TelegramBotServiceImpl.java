@@ -2,6 +2,7 @@ package thehatefulsix.carsharingapp.service.impl;
 
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
+import java.util.concurrent.ExecutorService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
@@ -28,6 +29,7 @@ public class TelegramBotServiceImpl extends TelegramLongPollingBot implements Te
     private final UserRepository userRepository;
     private final RentalRepository rentalRepository;
     private final CarRepository carRepository;
+    private final ExecutorService executorService;
     private final Long chatId = -4085484353L;
 
     public String getBotToken() {
@@ -45,11 +47,13 @@ public class TelegramBotServiceImpl extends TelegramLongPollingBot implements Te
     }
 
     private void executeMessage(SendMessage message) {
-        try {
-            execute(message);
-        } catch (TelegramApiException e) {
-            throw new TelegramBotException("Something went wrong with executing message.");
-        }
+        executorService.execute(() -> {
+            try {
+                execute(message);
+            } catch (TelegramApiException e) {
+                throw new TelegramBotException("Something went wrong with executing message.");
+            }
+        });
     }
 
     private void prepareAndSendMessage(long chatId, String textToSend) {

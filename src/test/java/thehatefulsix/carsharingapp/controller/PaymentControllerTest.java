@@ -1,6 +1,6 @@
 package thehatefulsix.carsharingapp.controller;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -48,7 +48,6 @@ public class PaymentControllerTest {
         );
 
         String jsonRequest = objectMapper.writeValueAsString(requestDto);
-        System.out.println(jsonRequest);
 
         mockMvc.perform(post("/payments")
                         .content(jsonRequest)
