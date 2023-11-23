@@ -3,6 +3,7 @@ package thehatefulsix.carsharingapp.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -34,6 +35,7 @@ import thehatefulsix.carsharingapp.model.user.User;
 import thehatefulsix.carsharingapp.repository.RoleRepository;
 import thehatefulsix.carsharingapp.repository.UserRepository;
 import thehatefulsix.carsharingapp.service.impl.UserServiceImpl;
+import thehatefulsix.carsharingapp.util.EmailNotificationSender;
 
 @ExtendWith(MockitoExtension.class)
 public class UserServiceTests {
@@ -53,6 +55,11 @@ public class UserServiceTests {
 
     @Mock
     private RoleRepository roleRepository;
+    @Mock
+    private EmailNotificationSender emailNotificationSender;
+
+    @Mock
+    private TelegramBotService telegramBotService;
 
     @Spy
     private UserMapper userMapper = new UserMapperImpl();
@@ -94,6 +101,7 @@ public class UserServiceTests {
         when(userMapper.toUser(requestDto)).thenReturn(user);
         when(userRepository.save(user)).thenReturn(user);
         when(userMapper.toUserResponseDto(user)).thenReturn(expected);
+        doNothing().when(emailNotificationSender).sendRegistrationNotification(user);
         when(roleRepository.findByName(RoleName.CLIENT)).thenReturn(role);
 
         UserResponseDto actual = userService.register(requestDto);
@@ -103,8 +111,6 @@ public class UserServiceTests {
 
     @Test
     public void register_WithInvalidData_ShouldThrowException() {
-        Long id = 1L;
-
         User user = new User();
         user.setEmail("test@example.com");
         user.setFirstName("John");
@@ -133,8 +139,6 @@ public class UserServiceTests {
 
     @Test
     public void update_WithValidData_ShouldReturnUserResponseDto() {
-        Long id = 1L;
-
         User user = new User();
         user.setEmail("test@example.com");
         user.setFirstName("John");
@@ -161,14 +165,6 @@ public class UserServiceTests {
 
     @Test
     public void update_WithInvalidData_ShouldThrowException() {
-        Long id = 1L;
-
-        User user = new User();
-        user.setEmail("test@example.com");
-        user.setFirstName("John");
-        user.setLastName("Doe");
-        user.setPassword("12345678");
-
         UserUpdateDto updateDto = new UserUpdateDto(
                 "Test first name",
                 "Test last name"
@@ -191,7 +187,6 @@ public class UserServiceTests {
 
     @Test
     public void getProfileInfo_WithValidData_ShouldReturnUserResponseDto() {
-
         User user = new User();
         user.setEmail("test@example.com");
         user.setFirstName("John");
@@ -240,7 +235,6 @@ public class UserServiceTests {
 
     @Test
     public void updateRole_WithValidData_ShouldDoNothing() {
-
         User user = new User();
         user.setEmail("test@example.com");
         user.setFirstName("John");

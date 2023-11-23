@@ -11,7 +11,7 @@ public interface PaymentService {
 
     PaymentDto createPaymentSession(CreatePaymentRequestDto createPaymentDto);
 
-    List<PaymentWithoutUrlDto> getAllPayments(Long userId, Pageable pageable);
+    List<PaymentWithoutUrlDto> getAllPayments(Pageable pageable);
 
     PaymentWithoutUrlDto getSuccessPayment(String sessionId);
 

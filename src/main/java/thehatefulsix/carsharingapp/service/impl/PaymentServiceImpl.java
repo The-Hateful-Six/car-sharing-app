@@ -6,6 +6,7 @@ import com.stripe.model.checkout.Session;
 import com.stripe.param.checkout.SessionCreateParams;
 import jakarta.annotation.PostConstruct;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -15,6 +16,8 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import thehatefulsix.carsharingapp.dto.payment.CreatePaymentRequestDto;
 import thehatefulsix.carsharingapp.dto.payment.PaymentCanceledDto;
@@ -27,12 +30,16 @@ import thehatefulsix.carsharingapp.model.car.Car;
 import thehatefulsix.carsharingapp.model.payment.Payment;
 import thehatefulsix.carsharingapp.model.payment.PaymentStatus;
 import thehatefulsix.carsharingapp.model.payment.PaymentType;
+import thehatefulsix.carsharingapp.model.user.RoleName;
+import thehatefulsix.carsharingapp.model.user.User;
 import thehatefulsix.carsharingapp.payment.strategy.OperationHandler;
 import thehatefulsix.carsharingapp.payment.strategy.OperationStrategy;
 import thehatefulsix.carsharingapp.repository.CarRepository;
 import thehatefulsix.carsharingapp.repository.PaymentRepository;
 import thehatefulsix.carsharingapp.repository.RentalRepository;
+import thehatefulsix.carsharingapp.repository.UserRepository;
 import thehatefulsix.carsharingapp.service.PaymentService;
+import thehatefulsix.carsharingapp.service.TelegramBotService;
 
 @RequiredArgsConstructor
 @Service
@@ -43,7 +50,7 @@ public class PaymentServiceImpl implements PaymentService {
     private static final String PAYMENT_NAME = "Payment";
     private static final String SESSION_AUTO_REQUEST = "?session_id={CHECKOUT_SESSION_ID}";
     private static final String DATE_FORMAT = "dd.MM.yyyy HH:mm";
-    private static final Long EXPIRATION_TIME_IN_SECONDS = 86400L;
+    private static final Long EXPIRATION_TIME_IN_SECONDS = 70400L;
     private static final Long SECOND_DIVIDE = 1000L;
     private static final Long DEFAULT_QUANTITY = 1L;
     private static final BigDecimal CENT_DIVIDE = new BigDecimal(100);
@@ -53,6 +60,8 @@ public class PaymentServiceImpl implements PaymentService {
     private final PaymentRepository paymentRepository;
     private final PaymentMapper paymentMapper;
     private final OperationStrategy operationStrategy;
+    private final TelegramBotService telegramBotService;
+    private final UserRepository userRepository;
 
     @Value("${stripe.secret.key}")
     private String stripeKey;
@@ -71,13 +80,15 @@ public class PaymentServiceImpl implements PaymentService {
         } catch (StripeException e) {
             throw new PaymentStripeException("Can't create payment session", e);
         }
-        return paymentMapper.toDto(createPayment(createPaymentDto,session));
+        return paymentMapper.toDto(createPayment(createPaymentDto, session));
     }
 
+    @Transactional
     @Override
     public PaymentWithoutUrlDto getSuccessPayment(String sessionId) {
         Payment payment = paymentRepository.findBySessionId(sessionId);
         payment.setStatus(PaymentStatus.PAID);
+        telegramBotService.sendPaymentMessage(payment);
         return paymentMapper.toWithoutUrlDto(paymentRepository.save(payment));
     }
 
@@ -95,13 +106,26 @@ public class PaymentServiceImpl implements PaymentService {
         String formattedDateTime = expireTime
                 .format(DateTimeFormatter.ofPattern(DATE_FORMAT));
         String message = "Something went wrong. You can perform the operation "
-                + "for 24 hours, until " + formattedDateTime;
+                         + "for 24 hours, until " + formattedDateTime;
         return new PaymentCanceledDto(message);
     }
 
     @Override
-    public List<PaymentWithoutUrlDto> getAllPayments(Long userId, Pageable pageable) {
-        return paymentRepository.findPaymentsByUserId(userId, pageable).stream()
+    public List<PaymentWithoutUrlDto> getAllPayments(Pageable pageable) {
+        if (SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .toList()
+                .contains(RoleName.MANAGER.name())
+        ) {
+            return paymentRepository.findAll(pageable).stream()
+                    .map(paymentMapper::toWithoutUrlDto)
+                    .toList();
+        }
+
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userRepository.findByEmail(email).orElseThrow(()
+                -> new EntityNotFoundException("Can't find user by email: " + email));
+        return paymentRepository.findPaymentsByUserId(user.getId()).stream()
                 .map(paymentMapper::toWithoutUrlDto)
                 .toList();
     }
@@ -122,7 +146,7 @@ public class PaymentServiceImpl implements PaymentService {
         Rental rental = rentalRepository.findById(createPaymentDto.rentalId())
                 .orElseThrow(() -> new EntityNotFoundException(
                         "Can't find rental with id: " + createPaymentDto.rentalId()));
-        Car car = carRepository.findById(rental.getCarId())
+        Car car = carRepository.getCarById(rental.getCarId())
                 .orElseThrow(() -> new EntityNotFoundException(
                         "Can't find car with id: " + rental.getCarId()));
         String string = createPaymentDto.paymentType();
@@ -152,7 +176,7 @@ public class PaymentServiceImpl implements PaymentService {
         Car car = carRepository.getCarById(rental.getCarId()).orElseThrow(
                 () -> new EntityNotFoundException("Can't find car with id: " + rental.getCarId()));
         StringBuilder descriptionBuilder = new StringBuilder();
-        descriptionBuilder.append("for renting")
+        descriptionBuilder.append("for renting ")
                 .append(car.getBrand())
                 .append(" ")
                 .append(car.getModel());
