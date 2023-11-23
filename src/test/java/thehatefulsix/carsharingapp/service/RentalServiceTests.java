@@ -2,6 +2,7 @@ package thehatefulsix.carsharingapp.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
 import jakarta.persistence.EntityNotFoundException;
@@ -27,11 +28,14 @@ import thehatefulsix.carsharingapp.mapper.RentalMapper;
 import thehatefulsix.carsharingapp.model.Rental;
 import thehatefulsix.carsharingapp.model.car.Car;
 import thehatefulsix.carsharingapp.model.car.CarType;
+import thehatefulsix.carsharingapp.model.payment.Payment;
 import thehatefulsix.carsharingapp.model.user.User;
 import thehatefulsix.carsharingapp.repository.CarRepository;
+import thehatefulsix.carsharingapp.repository.PaymentRepository;
 import thehatefulsix.carsharingapp.repository.RentalRepository;
 import thehatefulsix.carsharingapp.repository.UserRepository;
 import thehatefulsix.carsharingapp.service.impl.RentalServiceImpl;
+import thehatefulsix.carsharingapp.util.EmailNotificationSender;
 
 @ExtendWith(MockitoExtension.class)
 public class RentalServiceTests {
@@ -47,6 +51,10 @@ public class RentalServiceTests {
     private SecurityContext securityContext;
     @Mock
     private Authentication authentication;
+    @Mock
+    private PaymentRepository paymentRepository;
+    @Mock
+    private EmailNotificationSender emailNotificationSender;
     @InjectMocks
     private RentalServiceImpl rentalService;
 
@@ -166,7 +174,6 @@ public class RentalServiceTests {
 
     @Test
     public void createNewRental_WithValidRequest_ReturnsRentalDto() {
-
         Car car = new Car();
         Long carId = 1L;
         car.setId(carId);
@@ -199,14 +206,19 @@ public class RentalServiceTests {
         CreateRentalRequestDto requestDto = new CreateRentalRequestDto(LocalDate.of(2023,
                 11, 19), LocalDate.of(2023, 11, 20), 1L);
 
+        Payment payment = new Payment();
+
+        when(rentalMapper.toRental(requestDto)).thenReturn(rental);
+        when(rentalMapper.toDto(rental)).thenReturn(rentalDto);
+        when(paymentRepository.findPaymentsByUserId(userId)).thenReturn(List.of(payment));
+        emailNotificationSender.sendCreateRentalNotification(rental, user, car);
+        doNothing().when(emailNotificationSender).sendCreateRentalNotification(rental, user, car);
         when(securityContext.getAuthentication()).thenReturn(authentication);
         when(authentication.getName()).thenReturn(email);
         when(carRepository.findById(carId)).thenReturn(Optional.of(car));
-        when(rentalMapper.toRental(requestDto)).thenReturn(rental);
         when(userRepository.findByEmail(email)).thenReturn(Optional.of(user));
         when(carRepository.save(car)).thenReturn(car);
         when(rentalRepository.save(rental)).thenReturn(rental);
-        when(rentalMapper.toDto(rental)).thenReturn(rentalDto);
 
         int expectedInventory = 4;
         RentalDto actual = rentalService.save(requestDto);
@@ -237,15 +249,6 @@ public class RentalServiceTests {
         car.setInventory(5);
         car.setDailyFee(BigDecimal.valueOf(100));
         car.setDeleted(false);
-
-        String email = "test@example.com";
-        Long userId = 1L;
-        User user = new User();
-        user.setId(userId);
-        user.setEmail(email);
-        user.setFirstName("John");
-        user.setLastName("Doe");
-        user.setPassword("12345678");
 
         RentalDto rentalDto = new RentalDto(1L, LocalDate.of(2023,
                 11, 19), LocalDate.of(2023, 11, 20), null, 1L, 1L, true);
