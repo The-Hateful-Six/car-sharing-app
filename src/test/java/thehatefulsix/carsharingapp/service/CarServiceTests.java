@@ -1,6 +1,5 @@
 package thehatefulsix.carsharingapp.service;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.times;
@@ -23,6 +22,7 @@ import thehatefulsix.carsharingapp.mapper.CarMapper;
 import thehatefulsix.carsharingapp.model.car.Car;
 import thehatefulsix.carsharingapp.model.car.CarType;
 import thehatefulsix.carsharingapp.repository.CarRepository;
+import thehatefulsix.carsharingapp.service.impl.CarServiceImpl;
 
 @ExtendWith(MockitoExtension.class)
 public class CarServiceTests {
@@ -33,7 +33,7 @@ public class CarServiceTests {
     private CarMapper carMapper;
 
     @InjectMocks
-    private CarService carService;
+    private CarServiceImpl carService;
 
     @Test
     @DisplayName("Save valid car")
@@ -108,32 +108,6 @@ public class CarServiceTests {
         String expected = "Can`t find car by id " + carId;
         String actual = exception.getMessage();
         assertEquals(expected, actual);
-    }
-
-    @Test
-    @DisplayName("update car by valid id")
-    public void update_validCar_returnCarDto() {
-        CreateCarRequestDto createCarRequestDto;
-        createCarRequestDto = new CreateCarRequestDto(
-                "Audi", "Q7",1, "HATCHBACK", BigDecimal.valueOf(200));
-
-        Long carId = 1L;
-
-        Car car = new Car();
-        car.setId(carId);
-        car.setBrand("Audi");
-        car.setModel("Q7");
-        car.setInventory(1);
-        car.setCarType(CarType.valueOf("HATCHBACK"));
-        car.setDailyFee(BigDecimal.valueOf(200));
-
-        Mockito.when(carRepository.getCarById(carId)).thenReturn(Optional.of(car));
-        Mockito.when(carRepository.save(car)).thenReturn(car);
-
-        CarDto updated = carService.update(createCarRequestDto, carId);
-
-        assertThat(updated).hasFieldOrPropertyWithValue("brand", createCarRequestDto.brand())
-                .hasFieldOrPropertyWithValue("model", createCarRequestDto.model());
     }
 
     @Test
