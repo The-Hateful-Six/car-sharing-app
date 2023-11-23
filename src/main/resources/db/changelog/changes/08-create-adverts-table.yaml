@@ -1,0 +1,25 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-advert-table
+      author: sonia baranova
+      changes:
+        - createTable:
+            tableName: adverts
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: text
+                  type: VARCHAR(3000)
+              - column:
+                  name: photo_url
+                  type: VARCHAR(2000)
+              - column:
+                  name: send_time
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: false
