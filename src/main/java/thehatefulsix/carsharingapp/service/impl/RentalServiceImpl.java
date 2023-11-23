@@ -85,6 +85,9 @@ public class RentalServiceImpl implements RentalService {
                 .map(userId -> userRepository.findById(userId).orElse(null))
                 .filter(Objects::nonNull)
                 .toList();
+        if (users.size() == 0) {
+            return;
+        }
         String usersEmail = users.stream()
                         .map(User::getEmail)
                                 .collect(Collectors.joining("\n"));
