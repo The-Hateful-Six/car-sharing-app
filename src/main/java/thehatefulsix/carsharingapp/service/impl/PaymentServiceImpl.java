@@ -44,8 +44,8 @@ import thehatefulsix.carsharingapp.service.TelegramBotService;
 @RequiredArgsConstructor
 @Service
 public class PaymentServiceImpl implements PaymentService {
-    private static final String SUCCESS_URL = "http://localhost:8080/payments/success";
-    private static final String CANCEL_URL = "http://localhost:8080/payments/cancel";
+    private static final String SUCCESS_URL = "http://localhost:8082/payments/success";
+    private static final String CANCEL_URL = "http://localhost:8082/payments/cancel";
     private static final String PAYMENT_CURRENCY = "usd";
     private static final String PAYMENT_NAME = "Payment";
     private static final String SESSION_AUTO_REQUEST = "?session_id={CHECKOUT_SESSION_ID}";
