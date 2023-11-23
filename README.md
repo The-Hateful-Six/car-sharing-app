@@ -132,6 +132,7 @@ The project also supports such types of telegram notifications:
 - A notification regarding a newly registered user
 - Successful payment notification
 - Notifications regarding overdue rentals ("No rentals overdue today!" message in case there are no overdue rentals)
+- Advertisement notifications for special offers 
 
 ### Project launch guide
 The following steps are required in order to setup the project on your device:
