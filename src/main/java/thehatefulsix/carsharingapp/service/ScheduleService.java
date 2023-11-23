@@ -5,4 +5,5 @@ public interface ScheduleService {
 
     void sendMessageHourly();
 
+    void checkSessionExpirationMinutely();
 }

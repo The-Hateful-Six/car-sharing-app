@@ -50,7 +50,7 @@ public class PaymentServiceImpl implements PaymentService {
     private static final String PAYMENT_NAME = "Payment";
     private static final String SESSION_AUTO_REQUEST = "?session_id={CHECKOUT_SESSION_ID}";
     private static final String DATE_FORMAT = "dd.MM.yyyy HH:mm";
-    private static final Long EXPIRATION_TIME_IN_SECONDS = 70400L;
+    private static final Long EXPIRATION_TIME_IN_SECONDS = 86000L;
     private static final Long SECOND_DIVIDE = 1000L;
     private static final Long DEFAULT_QUANTITY = 1L;
     private static final BigDecimal CENT_DIVIDE = new BigDecimal(100);
@@ -101,12 +101,15 @@ public class PaymentServiceImpl implements PaymentService {
             throw new PaymentStripeException(
                     "Can't find payment session with id: " + sessionId, e);
         }
-        Instant instant = Instant.ofEpochMilli(session.getExpiresAt());
+        Instant instant = Instant.ofEpochMilli(session.getExpiresAt() * SECOND_DIVIDE);
         LocalDateTime expireTime = LocalDateTime.ofInstant(instant, ZoneId.systemDefault());
         String formattedDateTime = expireTime
                 .format(DateTimeFormatter.ofPattern(DATE_FORMAT));
         String message = "Something went wrong. You can perform the operation "
                          + "for 24 hours, until " + formattedDateTime;
+
+        System.out.println(formattedDateTime);
+
         return new PaymentCanceledDto(message);
     }
 
@@ -121,13 +124,36 @@ public class PaymentServiceImpl implements PaymentService {
                     .map(paymentMapper::toWithoutUrlDto)
                     .toList();
         }
-
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userRepository.findByEmail(email).orElseThrow(()
                 -> new EntityNotFoundException("Can't find user by email: " + email));
         return paymentRepository.findPaymentsByUserId(user.getId()).stream()
                 .map(paymentMapper::toWithoutUrlDto)
                 .toList();
+    }
+
+    @Override
+    public void checkSessionExpiration() {
+        List<String> expiredList = paymentRepository.findAll().stream()
+                .filter(p -> p.getStatus().equals(PaymentStatus.PENDING))
+                .map(p -> {
+                    try {
+                        return Session.retrieve(p.getSessionId());
+                    } catch (StripeException e) {
+                        throw new RuntimeException(e);
+                    }
+                })
+                .filter(s -> s.getExpiresAt() <= System.currentTimeMillis() / SECOND_DIVIDE)
+                .map(Session::getId)
+                .toList();
+        if (!expiredList.isEmpty()) {
+            expiredList
+                    .forEach(sessionId -> {
+                        Payment payment = paymentRepository.findBySessionId(sessionId);
+                        payment.setStatus(PaymentStatus.EXPIRED);
+                        paymentRepository.save(payment);
+                    });
+        }
     }
 
     private Payment createPayment(CreatePaymentRequestDto createPaymentDto, Session session) {
