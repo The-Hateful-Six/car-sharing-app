@@ -39,7 +39,7 @@ public class PaymentControllerTest {
     @Sql(scripts = "classpath:database/payments/add-entities-to-database.sql")
     @Sql(scripts = "classpath:database/payments/delete-all-from-database.sql",
             executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-    @WithMockUser(username = "test@gmail.com", authorities = {"CLIENT"})
+    @WithMockUser(username = "test@gmail.com", authorities = {"MANAGER"})
     @Test
     void createPaymentSession_WithValidData_ShouldReturn() throws Exception {
         CreatePaymentRequestDto requestDto = new CreatePaymentRequestDto(

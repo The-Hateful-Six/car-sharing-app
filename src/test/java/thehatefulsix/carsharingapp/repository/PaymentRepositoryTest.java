@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.jdbc.Sql;
 import thehatefulsix.carsharingapp.model.payment.Payment;
 
@@ -23,9 +22,8 @@ class PaymentRepositoryTest {
     @Test
     void findPaymentsByUserId_ValidData_ShouldReturnPaymentList() {
         Long id = 1L;
-        PageRequest pageRequest = PageRequest.of(0, 10);
 
-        List<Payment> actual = paymentRepository.findPaymentsByUserId(id, pageRequest);
+        List<Payment> actual = paymentRepository.findPaymentsByUserId(id);
         Assertions.assertEquals(1, actual.size());
     }
 }

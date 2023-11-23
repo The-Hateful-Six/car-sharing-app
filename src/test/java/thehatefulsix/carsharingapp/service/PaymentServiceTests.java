@@ -9,57 +9,65 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import thehatefulsix.carsharingapp.dto.payment.CreatePaymentRequestDto;
 import thehatefulsix.carsharingapp.dto.payment.PaymentDto;
 import thehatefulsix.carsharingapp.dto.payment.PaymentWithoutUrlDto;
 import thehatefulsix.carsharingapp.mapper.PaymentMapper;
-import thehatefulsix.carsharingapp.mapper.impl.PaymentMapperImpl;
 import thehatefulsix.carsharingapp.model.Rental;
 import thehatefulsix.carsharingapp.model.car.Car;
 import thehatefulsix.carsharingapp.model.car.CarType;
 import thehatefulsix.carsharingapp.model.payment.Payment;
 import thehatefulsix.carsharingapp.model.payment.PaymentStatus;
 import thehatefulsix.carsharingapp.model.payment.PaymentType;
+import thehatefulsix.carsharingapp.model.user.User;
 import thehatefulsix.carsharingapp.payment.strategy.OperationStrategy;
 import thehatefulsix.carsharingapp.payment.strategy.impl.PaymentOperation;
 import thehatefulsix.carsharingapp.repository.CarRepository;
 import thehatefulsix.carsharingapp.repository.PaymentRepository;
 import thehatefulsix.carsharingapp.repository.RentalRepository;
+import thehatefulsix.carsharingapp.repository.UserRepository;
 import thehatefulsix.carsharingapp.service.impl.PaymentServiceImpl;
 
 @ExtendWith(MockitoExtension.class)
 public class PaymentServiceTests {
     @InjectMocks
     private PaymentServiceImpl paymentService;
-
     @Mock
     private PaymentRepository paymentRepository;
-
     @Mock
     private RentalRepository rentalRepository;
-
     @Mock
     private CarRepository carRepository;
-
     @Mock
     private OperationStrategy operationStrategy;
-
     @Mock
     private PaymentOperation paymentOperation;
-
     @Mock
     private TelegramBotService telegramBotService;
+    @Mock
+    private PaymentMapper paymentMapper;
+    @Mock
+    private Authentication authentication;
+    @Mock
+    private SecurityContext securityContext;
+    @Mock
+    private UserRepository userRepository;
 
-    @Spy
-    private PaymentMapper paymentMapper = new PaymentMapperImpl();
+    @BeforeEach
+    void setUp() {
+        SecurityContextHolder.setContext(securityContext);
+    }
 
     @Test
     @DisplayName(value = "Create new payment session")
@@ -127,10 +135,12 @@ public class PaymentServiceTests {
     @Test
     @DisplayName(value = "Get list of all specific user payments")
     void getAllPayments_ValidUserId_ShouldReturnListOfPaymentWithoutUrlDto() {
-        Long id = 1L;
+        User user = new User();
+        user.setId(1L);
+        user.setEmail("test@gmail.com");
 
         Payment payment = new Payment();
-        payment.setId(id);
+        payment.setId(user.getId());
         payment.setSessionId("random_test_id");
         payment.setSessionUrl("http://test.url/random");
         payment.setType(PaymentType.PAYMENT);
@@ -150,10 +160,13 @@ public class PaymentServiceTests {
         PageRequest pageRequest = PageRequest.of(0, 10);
         List<Payment> paymentsList = List.of(payment);
 
-        when(paymentRepository.findPaymentsByUserId(id, pageRequest)).thenReturn(paymentsList);
+        when(securityContext.getAuthentication()).thenReturn(authentication);
+        when(authentication.getName()).thenReturn(user.getEmail());
+        when(userRepository.findByEmail(user.getEmail())).thenReturn(Optional.of(user));
+        when(paymentRepository.findPaymentsByUserId(user.getId())).thenReturn(paymentsList);
         when(paymentMapper.toWithoutUrlDto(payment)).thenReturn(paymentWithoutUrlDto);
 
-        List<PaymentWithoutUrlDto> actual = paymentService.getAllPayments(id, pageRequest);
+        List<PaymentWithoutUrlDto> actual = paymentService.getAllPayments(pageRequest);
         List<PaymentWithoutUrlDto> expected = List.of(paymentWithoutUrlDto);
 
         assertEquals(expected.size(), actual.size());
