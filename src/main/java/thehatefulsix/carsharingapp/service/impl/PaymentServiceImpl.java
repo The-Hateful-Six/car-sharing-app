@@ -146,7 +146,7 @@ public class PaymentServiceImpl implements PaymentService {
         Rental rental = rentalRepository.findById(createPaymentDto.rentalId())
                 .orElseThrow(() -> new EntityNotFoundException(
                         "Can't find rental with id: " + createPaymentDto.rentalId()));
-        Car car = carRepository.findById(rental.getCarId())
+        Car car = carRepository.getCarById(rental.getCarId())
                 .orElseThrow(() -> new EntityNotFoundException(
                         "Can't find car with id: " + rental.getCarId()));
         String string = createPaymentDto.paymentType();
