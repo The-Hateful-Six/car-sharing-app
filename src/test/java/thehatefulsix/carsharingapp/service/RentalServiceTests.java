@@ -1,21 +1,21 @@
 package thehatefulsix.carsharingapp.service;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.when;
+
+import jakarta.persistence.EntityNotFoundException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-
-import com.stripe.model.tax.Registration;
-import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.Authentication;
@@ -32,11 +32,6 @@ import thehatefulsix.carsharingapp.repository.CarRepository;
 import thehatefulsix.carsharingapp.repository.RentalRepository;
 import thehatefulsix.carsharingapp.repository.UserRepository;
 import thehatefulsix.carsharingapp.service.impl.RentalServiceImpl;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class RentalServiceTests {
@@ -107,8 +102,6 @@ public class RentalServiceTests {
     public void getAllByUserIdAndIsActive_WithExistingUserIdAndIsActive_ReturnsRentalDtos() {
         Long userId = 1L;
         boolean isActive = true;
-        PageRequest pageRequest = PageRequest.of(0, 10);
-
         Rental rental1 = new Rental();
         rental1.setId(userId);
         rental1.setRentalDate(LocalDate.of(2023, 11, 20));
@@ -117,6 +110,7 @@ public class RentalServiceTests {
         rental1.setCarId(1L);
         rental1.setIsActive(isActive);
         rental1.setIsDeleted(false);
+        PageRequest pageRequest = PageRequest.of(0, 10);
 
         RentalDto rentalDto1 = new RentalDto(
                 1L,
@@ -133,7 +127,8 @@ public class RentalServiceTests {
                 .thenReturn(List.of(rental1));
         when(rentalMapper.toDto(rental1)).thenReturn(rentalDto1);
 
-        List<RentalDto> actual = rentalService.getAllByUserIdAndIsActive(userId, isActive, pageRequest);
+        List<RentalDto> actual = rentalService.getAllByUserIdAndIsActive(userId,
+                isActive, pageRequest);
         Assertions.assertEquals(expected.size(), actual.size());
 
         for (int i = 0; i < expected.size(); i++) {
@@ -152,7 +147,8 @@ public class RentalServiceTests {
         when(rentalRepository.getAllByUserIdAndIsActive(userId, isActive, pageRequest))
                 .thenReturn(Collections.emptyList());
 
-        List<RentalDto> actual = rentalService.getAllByUserIdAndIsActive(userId, isActive, pageRequest);
+        List<RentalDto> actual = rentalService.getAllByUserIdAndIsActive(userId,
+                isActive, pageRequest);
 
         Assertions.assertTrue(actual.isEmpty());
     }
@@ -163,24 +159,13 @@ public class RentalServiceTests {
         boolean isActive = false;
         PageRequest pageRequest = PageRequest.of(0, 10);
 
-        List<RentalDto> actual = rentalService.getAllByUserIdAndIsActive(userId, isActive, pageRequest);
+        List<RentalDto> actual = rentalService.getAllByUserIdAndIsActive(userId,
+                isActive, pageRequest);
         Assertions.assertTrue(actual.isEmpty());
     }
 
     @Test
     public void createNewRental_WithValidRequest_ReturnsRentalDto() {
-        CreateRentalRequestDto requestDto = new CreateRentalRequestDto(LocalDate.of(2023,
-                11, 19), LocalDate.of(2023, 11, 20), 1L);
-        RentalDto rentalDto = new RentalDto(1L, LocalDate.of(2023,
-                11, 19), LocalDate.of(2023, 11, 20), null, 1L, 1L, true);
-        Rental rental = new Rental();
-        rental.setId(1L);
-        rental.setRentalDate(LocalDate.of(2023, 11, 19));
-        rental.setReturnDate(LocalDate.of(2023, 11, 20));
-        rental.setUserId(1L);
-        rental.setCarId(1L);
-        rental.setIsActive(true);
-        rental.setIsDeleted(false);
 
         Car car = new Car();
         Long carId = 1L;
@@ -201,6 +186,19 @@ public class RentalServiceTests {
         user.setLastName("Doe");
         user.setPassword("12345678");
 
+        Rental rental = new Rental();
+        rental.setId(1L);
+        rental.setRentalDate(LocalDate.of(2023, 11, 19));
+        rental.setReturnDate(LocalDate.of(2023, 11, 20));
+        rental.setUserId(1L);
+        rental.setCarId(1L);
+        rental.setIsActive(true);
+        rental.setIsDeleted(false);
+        RentalDto rentalDto = new RentalDto(1L, LocalDate.of(2023,
+                11, 19), LocalDate.of(2023, 11, 20), null, 1L, 1L, true);
+        CreateRentalRequestDto requestDto = new CreateRentalRequestDto(LocalDate.of(2023,
+                11, 19), LocalDate.of(2023, 11, 20), 1L);
+
         when(securityContext.getAuthentication()).thenReturn(authentication);
         when(authentication.getName()).thenReturn(email);
         when(carRepository.findById(carId)).thenReturn(Optional.of(car));
@@ -220,8 +218,6 @@ public class RentalServiceTests {
 
     @Test
     public void addActualReturnTime_ValidRequest_ReturnsRentalDto() {
-        RentalDto rentalDto = new RentalDto(1L, LocalDate.of(2023,
-                11, 19), LocalDate.of(2023, 11, 20), null, 1L, 1L, true);
         Rental rental = new Rental();
         Long rentalId = 1L;
         rental.setId(rentalId);
@@ -250,6 +246,9 @@ public class RentalServiceTests {
         user.setFirstName("John");
         user.setLastName("Doe");
         user.setPassword("12345678");
+
+        RentalDto rentalDto = new RentalDto(1L, LocalDate.of(2023,
+                11, 19), LocalDate.of(2023, 11, 20), null, 1L, 1L, true);
 
         when(carRepository.findById(carId)).thenReturn(Optional.of(car));
         when(rentalRepository.findById(rentalId)).thenReturn(Optional.of(rental));
