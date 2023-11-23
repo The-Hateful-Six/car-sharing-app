@@ -140,7 +140,8 @@ public class PaymentServiceImpl implements PaymentService {
                     try {
                         return Session.retrieve(p.getSessionId());
                     } catch (StripeException e) {
-                        throw new RuntimeException(e);
+                        throw new PaymentStripeException(
+                                "Can't find payment session with id: " + p.getSessionId(), e);
                     }
                 })
                 .filter(s -> s.getExpiresAt() <= System.currentTimeMillis() / SECOND_DIVIDE)
