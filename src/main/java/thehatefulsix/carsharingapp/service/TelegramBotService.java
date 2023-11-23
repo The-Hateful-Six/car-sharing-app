@@ -7,7 +7,7 @@ public interface TelegramBotService {
 
     void sendPaymentMessage(Payment payment);
 
-    void sendMessageToCertainGroup(Long chatId, String text);
+    void sendMessageToCertainGroup(String chatId, String text);
 
-    void sendMessageWithPhotoToGroup(Long chatId, String text, String photoUrl);
+    void sendMessageWithPhotoToGroup(String chatId, String text, String photoUrl);
 }
