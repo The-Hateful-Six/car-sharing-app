@@ -13,5 +13,7 @@ public interface RentalService {
 
     RentalDto getRentalById(Long rentalId);
 
+    void sendNotificationAboutRentDelay();
+
     RentalDto addActualReturnTime(Long rentalId);
 }

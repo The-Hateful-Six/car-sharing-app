@@ -8,5 +8,6 @@ import thehatefulsix.carsharingapp.model.Rental;
 
 public interface RentalRepository extends JpaRepository<Rental, Long> {
     @Query("SELECT r FROM Rental r WHERE r.userId = :userId AND r.isActive = :isActive")
-    List<Rental> getAllByUserIdAndIsActive(Long userId, boolean isActive, Pageable pageable);
+    List<Rental> getAllByUserIdAndIsActive(Long userId,
+                                           boolean isActive, Pageable pageable);
 }

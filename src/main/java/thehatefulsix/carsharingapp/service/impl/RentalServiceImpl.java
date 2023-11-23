@@ -1,8 +1,11 @@
 package thehatefulsix.carsharingapp.service.impl;
 
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -17,6 +20,7 @@ import thehatefulsix.carsharingapp.repository.CarRepository;
 import thehatefulsix.carsharingapp.repository.RentalRepository;
 import thehatefulsix.carsharingapp.repository.UserRepository;
 import thehatefulsix.carsharingapp.service.RentalService;
+import thehatefulsix.carsharingapp.service.TelegramBotService;
 import thehatefulsix.carsharingapp.util.EmailNotificationSender;
 
 @RequiredArgsConstructor
@@ -26,6 +30,7 @@ public class RentalServiceImpl implements RentalService {
     private final RentalMapper rentalMapper;
     private final CarRepository carRepository;
     private final UserRepository userRepository;
+    private final TelegramBotService telegramBotService;
     private final EmailNotificationSender emailNotificationSender;
 
     @Override
@@ -71,5 +76,26 @@ public class RentalServiceImpl implements RentalService {
         rental.setIsActive(false);
         carRepository.save(car);
         return rentalMapper.toDto(rentalRepository.save(rental));
+    }
+
+    @Transactional
+    public void sendNotificationAboutRentDelay() {
+        LocalDate yesterday = LocalDate.now().minusDays(1);
+        List<User> users = rentalRepository.findAll().stream()
+                .filter(r -> r.getReturnDate().isBefore(yesterday)
+                        && r.getActualReturnDate() == null)
+                .map(Rental::getUserId)
+                .distinct()
+                .map(userId -> userRepository.findById(userId).orElse(null))
+                .filter(Objects::nonNull)
+                .toList();
+        if (users.size() == 0) {
+            return;
+        }
+        String usersEmail = users.stream()
+                        .map(User::getEmail)
+                                .collect(Collectors.joining("\n"));
+        telegramBotService.sendMessage("Customers who did not return the cars "
+                + "before the return date: \n" + usersEmail);
     }
 }

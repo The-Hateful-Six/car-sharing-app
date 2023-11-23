@@ -41,18 +41,26 @@ import thehatefulsix.carsharingapp.util.EmailNotificationSender;
 public class UserServiceTests {
     @InjectMocks
     private UserServiceImpl userService;
+
     @Mock
     private UserRepository userRepository;
+
     @Mock
     private PasswordEncoder passwordEncoder;
+
     @Mock
     private Authentication authentication;
     @Mock
     private SecurityContext securityContext;
+
     @Mock
     private RoleRepository roleRepository;
     @Mock
     private EmailNotificationSender emailNotificationSender;
+
+    @Mock
+    private TelegramBotService telegramBotService;
+
     @Spy
     private UserMapper userMapper = new UserMapperImpl();
 

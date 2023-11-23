@@ -33,6 +33,7 @@ import thehatefulsix.carsharingapp.repository.CarRepository;
 import thehatefulsix.carsharingapp.repository.PaymentRepository;
 import thehatefulsix.carsharingapp.repository.RentalRepository;
 import thehatefulsix.carsharingapp.service.PaymentService;
+import thehatefulsix.carsharingapp.service.TelegramBotService;
 
 @RequiredArgsConstructor
 @Service
@@ -53,6 +54,7 @@ public class PaymentServiceImpl implements PaymentService {
     private final PaymentRepository paymentRepository;
     private final PaymentMapper paymentMapper;
     private final OperationStrategy operationStrategy;
+    private final TelegramBotService telegramBotService;
 
     @Value("${stripe.secret.key}")
     private String stripeKey;
@@ -78,6 +80,8 @@ public class PaymentServiceImpl implements PaymentService {
     public PaymentWithoutUrlDto getSuccessPayment(String sessionId) {
         Payment payment = paymentRepository.findBySessionId(sessionId);
         payment.setStatus(PaymentStatus.PAID);
+        telegramBotService.sendMessage("Rental with id "
+                + payment.getRentalId() + " was successfully paid");
         return paymentMapper.toWithoutUrlDto(paymentRepository.save(payment));
     }
 
