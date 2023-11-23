@@ -30,7 +30,7 @@ public class TelegramBotServiceImpl extends TelegramLongPollingBot implements Te
     private final RentalRepository rentalRepository;
     private final CarRepository carRepository;
     private final ExecutorService executorService;
-    private final Long chatId = -4085484353L;
+    private final String chatId = "-4085484353L";
 
     public String getBotToken() {
         return config.getBotToken();
@@ -56,9 +56,9 @@ public class TelegramBotServiceImpl extends TelegramLongPollingBot implements Te
         });
     }
 
-    private void prepareAndSendMessage(long chatId, String textToSend) {
+    private void prepareAndSendMessage(String chatId, String textToSend) {
         SendMessage message = new SendMessage();
-        message.setChatId(String.valueOf(chatId));
+        message.setChatId(chatId);
         message.setText(textToSend);
         executeMessage(message);
     }
@@ -69,12 +69,12 @@ public class TelegramBotServiceImpl extends TelegramLongPollingBot implements Te
     }
 
     @Override
-    public void sendMessageToCertainGroup(Long chatId, String text) {
+    public void sendMessageToCertainGroup(String chatId, String text) {
         prepareAndSendMessage(chatId, text);
     }
 
     @Override
-    public void sendMessageWithPhotoToGroup(Long chatId, String text, String photoUrl) {
+    public void sendMessageWithPhotoToGroup(String chatId, String text, String photoUrl) {
         SendPhoto photo = new SendPhoto();
         photo.setChatId(chatId);
         photo.setPhoto(new InputFile(photoUrl));

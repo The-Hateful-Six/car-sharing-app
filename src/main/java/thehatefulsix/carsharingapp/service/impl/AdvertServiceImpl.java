@@ -18,10 +18,10 @@ import thehatefulsix.carsharingapp.service.TelegramBotService;
 @Service
 @RequiredArgsConstructor
 public class AdvertServiceImpl implements AdvertService {
+    private static final String CHANNEL_USERNAME = "@brum_brum_car_sharing_6";
     private final AdvertMapper advertMapper;
     private final AdvertRepository advertRepository;
     private final TelegramBotService telegramBotService;
-    private final Long chatId = -1001981618064L;
 
     @Override
     public AdvertDto save(CreateAdvertRequestDto requestDto) {
@@ -68,10 +68,10 @@ public class AdvertServiceImpl implements AdvertService {
                 .toList();
         for (Advert advert : adverts) {
             if (advert.getPhotoUrl() != null) {
-                telegramBotService.sendMessageWithPhotoToGroup(chatId,
+                telegramBotService.sendMessageWithPhotoToGroup(CHANNEL_USERNAME,
                         advert.getText(), advert.getPhotoUrl());
             } else {
-                telegramBotService.sendMessageToCertainGroup(chatId, advert.getText());
+                telegramBotService.sendMessageToCertainGroup(CHANNEL_USERNAME, advert.getText());
             }
         }
     }
