@@ -19,6 +19,7 @@ import thehatefulsix.carsharingapp.repository.RoleRepository;
 import thehatefulsix.carsharingapp.repository.UserRepository;
 import thehatefulsix.carsharingapp.service.TelegramBotService;
 import thehatefulsix.carsharingapp.service.UserService;
+import thehatefulsix.carsharingapp.util.EmailNotificationSender;
 
 @RequiredArgsConstructor
 @Service
@@ -28,6 +29,7 @@ public class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
     private final RoleRepository roleRepository;
     private final TelegramBotService telegramBotService;
+    private final EmailNotificationSender emailNotificationSender;
 
     @Override
     public UserResponseDto register(
@@ -36,6 +38,7 @@ public class UserServiceImpl implements UserService {
             throw new RegistrationException("Unable to complete registration");
         }
         User user = userMapper.toUser(request);
+        emailNotificationSender.sendRegistrationNotification(user);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setRoles(Set.of(roleRepository.findByName(RoleName.CLIENT)));
         telegramBotService.sendMessage("The user with email: " + user.getEmail()
