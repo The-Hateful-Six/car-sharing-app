@@ -90,7 +90,7 @@ public class TelegramBotServiceImpl extends TelegramLongPollingBot implements Te
 
     @Transactional
     public void sendPaymentMessage(Payment payment) {
-        Long rentalId = payment.getId();
+        Long rentalId = payment.getRentalId();
         Rental rental = rentalRepository.findById(rentalId).orElseThrow(()
                 -> new EntityNotFoundException("Can't find rental by id: " + rentalId));
         Long carId = rental.getCarId();
@@ -104,7 +104,7 @@ public class TelegramBotServiceImpl extends TelegramLongPollingBot implements Te
                 Total price paid: $%.2f
                 Have a nice day!
                 """.formatted(
-                rental.getId(),
+                rentalId,
                 user.getFirstName(),
                 user.getLastName(),
                 car.getBrand(),
