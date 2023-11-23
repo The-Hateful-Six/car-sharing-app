@@ -63,7 +63,12 @@ public class RentalControllerTest {
 
         RentalDto actual = objectMapper.readValue(mvcResult.getResponse().getContentAsString(),
                 RentalDto.class);
-
+        assertEquals(expected.carId(), actual.carId());
+        assertEquals(expected.userId(), actual.userId());
+        assertEquals(expected.rentalDate(), actual.rentalDate());
+        assertEquals(expected.returnDate(), actual.returnDate());
+        assertEquals(expected.isActive(), actual.isActive());
+        assertEquals(expected.actualReturnDate(), actual.actualReturnDate());
     }
 
     @Sql(scripts = {"classpath:database/rentals/add-default-car.sql",
