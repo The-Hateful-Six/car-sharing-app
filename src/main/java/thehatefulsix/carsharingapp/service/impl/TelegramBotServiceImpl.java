@@ -17,7 +17,7 @@ import thehatefulsix.carsharingapp.service.TelegramBotService;
 @Service
 public class TelegramBotServiceImpl extends TelegramLongPollingBot implements TelegramBotService {
     private final TelegramBotConfig config;
-    private final Long chatId = -4085484353L;
+    private final String chatId = "-4085484353L";
 
     public String getBotToken() {
         return config.getBotToken();
@@ -41,7 +41,7 @@ public class TelegramBotServiceImpl extends TelegramLongPollingBot implements Te
         }
     }
 
-    private void prepareAndSendMessage(long chatId, String textToSend) {
+    private void prepareAndSendMessage(String chatId, String textToSend) {
         SendMessage message = new SendMessage();
         message.setChatId(String.valueOf(chatId));
         message.setText(textToSend);
@@ -54,12 +54,12 @@ public class TelegramBotServiceImpl extends TelegramLongPollingBot implements Te
     }
 
     @Override
-    public void sendMessageToCertainGroup(Long chatId, String text) {
-        prepareAndSendMessage(chatId, text);
+    public void sendMessageToCertainGroup(String channelUsername, String text) {
+        prepareAndSendMessage(channelUsername, text);
     }
 
     @Override
-    public void sendMessageWithPhotoToGroup(Long chatId, String text, String photoUrl) {
+    public void sendMessageWithPhotoToGroup(String chatId, String text, String photoUrl) {
         SendPhoto photo = new SendPhoto();
         photo.setChatId(chatId);
         photo.setPhoto(new InputFile(photoUrl));
