@@ -4,18 +4,22 @@ import java.util.Properties;
 import javax.mail.Authenticator;
 import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import thehatefulsix.carsharingapp.model.Rental;
 import thehatefulsix.carsharingapp.model.car.Car;
 import thehatefulsix.carsharingapp.model.user.User;
+import thehatefulsix.carsharingapp.service.TelegramBotService;
 
 @Component
+@RequiredArgsConstructor
 public class EmailNotificationSender {
     @Value("${email_password}")
     private String emailPassword;
     private final String email = "hatefulcarsharing@ukr.net";
     private final Session session = Session.getInstance(properties(), authenticator());
+    private final TelegramBotService telegramBotService;
 
     private Properties properties() {
         Properties props = new Properties();
@@ -55,6 +59,7 @@ public class EmailNotificationSender {
                          + System.lineSeparator()
                          + "Вартість оренди на добу: " + car.getDailyFee() + System.lineSeparator()
                          + "Вдалої поїздки!";
+        telegramBotService.sendMessage(message);
         EmailUtil.sendEmail(session, user.getEmail(), subject, message);
     }
 }

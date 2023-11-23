@@ -34,7 +34,6 @@ public class CarController {
 
     @Operation(summary = "Get all cars",
             description = "Get a list of all cars")
-    @PreAuthorize("hasAuthority('CLIENT')")
     @GetMapping
     public List<CarDto> getAll(@ParameterObject @PageableDefault(size = 5) Pageable pageable) {
         return carService.findAll(pageable);
