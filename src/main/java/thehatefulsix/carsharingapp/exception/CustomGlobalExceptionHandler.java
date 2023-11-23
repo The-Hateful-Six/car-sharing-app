@@ -40,8 +40,14 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
     }
 
     @ExceptionHandler(PaymentStripeException.class)
-    protected ResponseEntity<String> handlePaymentStripeException(PaymentStripeException ex) {
-        return new ResponseEntity<>("payment exception: "
+    protected ResponseEntity<String> handlePaymentStripeExceptions(PaymentStripeException ex) {
+        return new ResponseEntity<>("payment-exception: "
+                                    + ex.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(RentalException.class)
+    protected ResponseEntity<String> handleRentalExceptions(RentalException ex) {
+        return new ResponseEntity<>("rental-exception: "
                                     + ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
@@ -52,7 +58,7 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
     }
 
     @ExceptionHandler(TelegramBotException.class)
-    protected ResponseEntity<String> handleTelegramBotException(TelegramBotException ex) {
+    protected ResponseEntity<String> handleTelegramBotExceptions(TelegramBotException ex) {
         return new ResponseEntity<>("telegram-bot-exception: "
                                     + ex.getMessage(), HttpStatus.BAD_REQUEST);
     }

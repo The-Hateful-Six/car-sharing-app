@@ -3,7 +3,6 @@ package thehatefulsix.carsharingapp.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.Positive;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
@@ -34,7 +33,7 @@ public class PaymentController {
 
     @Operation(summary = "Create payment session",
             description = "Create payment session by rental id")
-    @PreAuthorize("hasAuthority('CLIENT')")
+    @PreAuthorize("hasAuthority('MANAGER')")
     @PostMapping
     public PaymentDto createPaymentSession(
             @RequestBody @Valid CreatePaymentRequestDto paymentRequestDto) {
@@ -42,13 +41,12 @@ public class PaymentController {
     }
 
     @Operation(summary = "Get payments",
-            description = "Get all payments by client's id")
-    @PreAuthorize("hasAuthority('MANAGER')")
+            description = "Get all payments as manager, or get all users payments as user")
+    @PreAuthorize("hasAnyAuthority('MANAGER', 'CLIENT')")
     @GetMapping()
-    public List<PaymentWithoutUrlDto> getAllPaymentsByUserId(
-            @ParameterObject @PageableDefault(size = 5) Pageable pageable,
-            @RequestParam @Positive Long userId) {
-        return paymentService.getAllPayments(userId, pageable);
+    public List<PaymentWithoutUrlDto> getAllPayments(
+            @ParameterObject @PageableDefault(size = 2) Pageable pageable) {
+        return paymentService.getAllPayments(pageable);
     }
 
     @Operation(summary = "Check successful stripe payments",
