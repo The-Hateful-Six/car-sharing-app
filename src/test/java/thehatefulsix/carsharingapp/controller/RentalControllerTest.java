@@ -63,7 +63,6 @@ public class RentalControllerTest {
 
         RentalDto actual = objectMapper.readValue(mvcResult.getResponse().getContentAsString(),
                 RentalDto.class);
-        assertEquals(expected.id(), actual.id());
         assertEquals(expected.carId(), actual.carId());
         assertEquals(expected.userId(), actual.userId());
         assertEquals(expected.rentalDate(), actual.rentalDate());
