@@ -2,7 +2,7 @@
 Сar Sharing Service
 </h1>
 <p align="center">
-    <img width="500" src="https://www.motortrend.com/uploads/2022/03/2022-Honda-Civic-Touring-vs-2022-Hyundai-Elantra-Limited-vs-2022-Kia-Forte-GT-vs-2022-Mazda-Mazda3-Sedan-AWD-Turbo-vs-2022-Nissan-Sentra-SR-vs-2022-Volkswagen-Jetta-SEL-19.jpg?fit=around%7C875:492" alt="Material Bread logo">
+    <img width="500" src="https://robbreport.com/wp-content/uploads/2023/02/30-1.jpg?w=1000" alt="Car service logo">
 </p>
 
 ### Intro
