@@ -9,7 +9,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.jdbc.Sql;
-import thehatefulsix.carsharingapp.model.Rental;
+import thehatefulsix.carsharingapp.model.rental.Rental;
 
 @DataJpaTest
 @Sql(scripts = "classpath:database/rentals/add-default-car.sql")

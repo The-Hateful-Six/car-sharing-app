@@ -5,7 +5,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.NullValueCheckStrategy;
 import thehatefulsix.carsharingapp.dto.rental.CreateRentalRequestDto;
 import thehatefulsix.carsharingapp.dto.rental.RentalDto;
-import thehatefulsix.carsharingapp.model.Rental;
+import thehatefulsix.carsharingapp.model.rental.Rental;
 
 @Mapper(componentModel = "spring",
         injectionStrategy = InjectionStrategy.CONSTRUCTOR,

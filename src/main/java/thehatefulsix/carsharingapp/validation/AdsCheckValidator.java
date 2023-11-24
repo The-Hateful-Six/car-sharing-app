@@ -27,12 +27,9 @@ public class AdsCheckValidator implements ConstraintValidator<AdsCheck, Object> 
             secondField.setAccessible(true);
             photoUrl = (String) secondField.get(object);
         } catch (NoSuchFieldException | IllegalAccessException e) {
-            throw new AdvertCreateException("Something went wrong while cheating an ad");
+            throw new AdvertCreateException("Something went wrong while creating an ad");
         }
-        if ((photoUrl == null && text == null)
-                || (photoUrl != null && !photoUrl.endsWith(".jpg"))) {
-            return false;
-        }
-        return true;
+        return (photoUrl != null || text != null)
+               && (photoUrl == null || photoUrl.endsWith(".jpg"));
     }
 }

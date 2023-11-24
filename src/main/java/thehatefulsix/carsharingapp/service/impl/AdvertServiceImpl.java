@@ -10,7 +10,7 @@ import thehatefulsix.carsharingapp.dto.ads.AdvertDto;
 import thehatefulsix.carsharingapp.dto.ads.CreateAdvertRequestDto;
 import thehatefulsix.carsharingapp.exception.EntityNotFoundException;
 import thehatefulsix.carsharingapp.mapper.AdvertMapper;
-import thehatefulsix.carsharingapp.model.Advert;
+import thehatefulsix.carsharingapp.model.advert.Advert;
 import thehatefulsix.carsharingapp.repository.AdvertRepository;
 import thehatefulsix.carsharingapp.service.AdvertService;
 import thehatefulsix.carsharingapp.service.TelegramBotService;
@@ -54,7 +54,7 @@ public class AdvertServiceImpl implements AdvertService {
                 () -> new EntityNotFoundException("Can`t find the advert by id " + id)
         );
         advertMapper.updateAdvert(requestDto, advert);
-        advert.setId(id);
+        advert.setIsActive(true);
         return advertMapper.toDto(advertRepository.save(advert));
     }
 
@@ -64,9 +64,13 @@ public class AdvertServiceImpl implements AdvertService {
         List<Advert> adverts = advertRepository.findAll().stream()
                 .filter(a -> a.getSendTime().getDayOfYear() == today.getDayOfYear())
                 .filter(a -> a.getSendTime().getHour() == today.getHour())
-                .filter(a -> a.getSendTime().getMinute() == today.getMinute())
+                .filter(a -> a.getSendTime().getMinute() >= today.getMinute())
+                .filter(a -> a.getIsActive().equals(true))
                 .toList();
+
         for (Advert advert : adverts) {
+            advert.setIsActive(false);
+            advertRepository.save(advert);
             if (advert.getPhotoUrl() != null) {
                 telegramBotService.sendMessageWithPhotoToGroup(CHANNEL_USERNAME,
                         advert.getText(), advert.getPhotoUrl());
