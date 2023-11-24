@@ -6,7 +6,7 @@ import org.mapstruct.MappingTarget;
 import org.mapstruct.NullValueCheckStrategy;
 import thehatefulsix.carsharingapp.dto.ads.AdvertDto;
 import thehatefulsix.carsharingapp.dto.ads.CreateAdvertRequestDto;
-import thehatefulsix.carsharingapp.model.Advert;
+import thehatefulsix.carsharingapp.model.advert.Advert;
 
 @Mapper(
         componentModel = "spring",

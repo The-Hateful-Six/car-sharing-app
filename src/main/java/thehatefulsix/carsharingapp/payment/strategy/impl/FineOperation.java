@@ -2,8 +2,8 @@ package thehatefulsix.carsharingapp.payment.strategy.impl;
 
 import java.math.BigDecimal;
 import java.time.temporal.ChronoUnit;
-import thehatefulsix.carsharingapp.model.Rental;
 import thehatefulsix.carsharingapp.model.car.Car;
+import thehatefulsix.carsharingapp.model.rental.Rental;
 import thehatefulsix.carsharingapp.payment.strategy.OperationHandler;
 
 public class FineOperation implements OperationHandler {

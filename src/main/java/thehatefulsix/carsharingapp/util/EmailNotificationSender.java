@@ -7,8 +7,8 @@ import javax.mail.Session;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import thehatefulsix.carsharingapp.model.Rental;
 import thehatefulsix.carsharingapp.model.car.Car;
+import thehatefulsix.carsharingapp.model.rental.Rental;
 import thehatefulsix.carsharingapp.model.user.User;
 import thehatefulsix.carsharingapp.service.TelegramBotService;
 
