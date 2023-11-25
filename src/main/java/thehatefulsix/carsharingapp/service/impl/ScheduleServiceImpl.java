@@ -15,19 +15,19 @@ public class ScheduleServiceImpl implements ScheduleService {
     private final PaymentService paymentService;
     private final AdvertService advertService;
 
-    @Scheduled(cron = "0 */5 * * * *")
+    @Scheduled(cron = "0 0 0 * * *")
     @Override
     public void sendMessageMinutely() {
         rentalService.sendNotificationAboutRentDelay();
     }
 
-    @Scheduled(cron = "0 */5 * * * *")
+    @Scheduled(cron = "0 */30 * * * *")
     @Override
     public void checkSessionExpirationMinutely() {
         paymentService.checkSessionExpiration();
     }
 
-    @Scheduled(cron = "0 * * * * *")
+    @Scheduled(cron = "0 */10 * * * *")
     @Override
     public void sendMessageHourly() {
         advertService.sentAdvert();
