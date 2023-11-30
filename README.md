@@ -143,3 +143,13 @@ The following steps are required in order to setup the project on your device:
 5. Run `docker-compose up --build` command to build and start the Docker containers
 6. The application should now be running at `http://localhost:8082`
 
+### Test with Swagger on AWS
+
+Access the AWS deployment at [http://ec2-18-212-92-240.compute-1.amazonaws.com/swagger-ui/index.html](http://ec2-18-212-92-240.compute-1.amazonaws.com/swagger-ui/index.html).
+
+If testing admin endpoints, use the following credentials:
+
+- **Email:** admin@gmail.com
+- **Password:** 222111
+
+
